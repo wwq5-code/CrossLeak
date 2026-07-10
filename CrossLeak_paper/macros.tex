@@ -1,0 +1,103 @@
+
+\usepackage{amsthm}
+\newtheorem{defn}{\textbf{Definition}}
+\newtheorem*{prob_state}{\textbf{Problem Statement}}
+\newtheorem{problem}{\textbf{Problem}}
+\newtheorem{sub_prob}{\textbf{Sub-Problem}}
+\newtheorem{theorem}{\textbf{Theorem}}
+\newtheorem{assumption}{\textbf{Assumption}}
+\newtheorem{proposition}{\textbf{Proposition}}
+\newtheorem{corollary}{\textbf{Corollary}}
+\newtheorem{lemma}{\textbf{Lemma}}
+
+
+
+\usepackage{color}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{subfig}
+\captionsetup[subfloat]{listofformat=parens}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+%\usepackage{hyperref} 
+\usepackage[hidelinks]{hyperref}
+\usepackage{cite}
+\usepackage{makecell}
+\usepackage[numbers]{natbib}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usepackage{tabularx,colortbl}
+\usepackage{threeparttable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{rotating}
+\usepackage[capitalize,noabbrev]{cleveref}
+\crefname{equation}{Eq.}{Eqs.}
+\usepackage{ragged2e}
+\usepackage{braket}
+
+\usepackage{adjustbox}
+
+
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{fancybox}
+
+
+\usepackage{floatrow}
+\usepackage{diagbox}
+
+\usepackage{soul}
+
+%\usepackage{subcaption}
+%\usepackage{flushend} % to balance the columns on the last page
+
+\newcommand{\filledcircle}{\tikz\fill[black] (0,0) circle (.8ex);}
+\newcommand{\emptycircle}{\tikz\draw (0,0) circle (.8ex);}
+
+\definecolor{DeepPink}{HTML}{FF1493}
+\definecolor{Orchid}{HTML}{DA70D6}
+\definecolor{Magenta}{HTML}{FF00FF}
+\definecolor{Fuchsia}{HTML}{FF00FF}
+\definecolor{LavenderPink}{HTML}{FFB6C1}
+\definecolor{verylightgray}{rgb}{0.9, 0.9, 0.9}
+\definecolor{lightred}{rgb}{1,0.8,0.8}
+
+% Ensure that 'cleveref' handles appendix references correctly
+%\crefname{section}{Appendix}{Appendices}
+%\Crefname{section}{Appendix}{Appendices}
+
+\tcbset{
+	takeaway/.style={
+		colback=white,      % 背景
+		colframe=black,     % 边框颜色
+		boxrule=0.4pt,      % 边框线宽
+		sharp corners,      % 直角；若想微圆角可改 arc=2pt
+		left=4pt,           % 内边距（左右）
+		right=4pt,
+		top=2pt,            % 内边距（上下）
+		bottom=2pt,
+		boxsep=0pt          % 文字与边框之间再无额外间距
+	}
+}
+
+\usepackage{mdframed}
+\newmdenv[
+linecolor=black,
+linewidth=0.4pt,
+roundcorner=2pt,   % 直角可删掉此行
+innerleftmargin=4pt,
+innerrightmargin=4pt,
+innertopmargin=2pt,
+innerbottommargin=2pt,
+skipabove=6pt,
+skipbelow=6pt
+]{takeawaybox}
+

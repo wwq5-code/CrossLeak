@@ -1,0 +1,12 @@
+
+
+\begin{abstract}
+
+Federated unlearning aims to remove the influence of deleted data from a federated model while preserving the privacy benefits of federated learning (FL). Existing unlearning privacy attacks show that the unlearning process itself may leak information about forgotten data, but they commonly rely on sample-level gradients or client updates. These assumptions are difficult to satisfy in privacy-preserving federated learning systems with secure aggregation. Under secure aggregation, the curious FL server cannot obtain any gradients or individual updates, but only the aggregated models.
+
+In this paper, we ask whether secure aggregation is sufficient to hide what has been forgotten. We propose CrossLeak, which treats unlearning privacy leakage as a paired-model comparison problem. By probing the original and unlearned aggregated models with the same public samples, it filters out stable model behavior and highlights representation directions that are weakened by deletion. A sparse CrossCoder then separates shared features from unlearning-sensitive features, enabling CrossLeak to infer deleted labels from representation and confidence shifts and to recover deletion-sensitive concepts from before-exclusive latent features. This design avoids the need for sample-level gradients or local updates, making the attack applicable even under secure aggregation.
+
+
+We evaluate CrossLeak on representative datasets and federated unlearning methods, including FedU, Hessian-FU, and exact federated retraining. The results show that even after secure aggregation hides client updates and gradients, the before-after difference between aggregated models can still reveal deleted labels and deletion-sensitive visual concepts. These findings expose a new privacy risk in federated unlearning: secure aggregation protects client updates, but it does not necessarily hide the information leaked by the act of forgetting itself.
+ 
+\end{abstract}

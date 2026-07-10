@@ -1,0 +1,521 @@
+
+
+Hessian unlearning summary across seeds:
+Ratio: 0.01
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8702, variance=0.000002
+  mia_acc_before: mean=0.5830, variance=0.000167
+  mia_acc_after: mean=0.5817, variance=0.000115
+  feature_vote_precision: mean=0.4800, variance=0.025600
+  feature_vote_recall: mean=0.4800, variance=0.025600
+  feature_vote_overlap: mean=0.4800, variance=0.025600
+  delta_z_precision: mean=0.5600, variance=0.022400
+  delta_z_recall: mean=0.5600, variance=0.022400
+  delta_z_overlap: mean=0.5600, variance=0.022400
+  confidence_drop_precision: mean=0.6800, variance=0.025600
+  confidence_drop_recall: mean=0.6800, variance=0.025600
+  confidence_drop_overlap: mean=0.6800, variance=0.025600
+  hybrid_precision: mean=0.5600, variance=0.006400
+  hybrid_recall: mean=0.5600, variance=0.006400
+  hybrid_overlap: mean=0.5600, variance=0.006400
+  ulia_known_k_precision: mean=0.5600, variance=0.006400
+  ulia_known_k_recall: mean=0.5600, variance=0.006400
+  ulia_known_k_overlap: mean=0.5600, variance=0.006400
+  ulia_dynamic_precision: mean=0.9000, variance=0.040000
+  ulia_dynamic_recall: mean=0.2400, variance=0.006400
+  ulia_dynamic_overlap: mean=0.2400, variance=0.006400
+  before_exclusive_strength_ratio: mean=0.5549, variance=0.023515
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.8400, variance=0.006400
+  clip_concept_precision: mean=0.5317, variance=0.005316
+  clip_weighted_coverage: mean=0.7466, variance=0.004731
+  feature_overlap@1: mean=0.4000, variance=0.240000
+  feature_overlap@5: mean=0.6000, variance=0.016000
+  feature_overlap@10: mean=0.7000, variance=0.012000
+
+
+
+Hessian unlearning summary across seeds:
+Ratio: 0.02
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8703, variance=0.000002
+  mia_acc_before: mean=0.5798, variance=0.000015
+  mia_acc_after: mean=0.5866, variance=0.000034
+  feature_vote_precision: mean=0.5600, variance=0.006400
+  feature_vote_recall: mean=0.5600, variance=0.006400
+  feature_vote_overlap: mean=0.5600, variance=0.006400
+  delta_z_precision: mean=0.5600, variance=0.022400
+  delta_z_recall: mean=0.5600, variance=0.022400
+  delta_z_overlap: mean=0.5600, variance=0.022400
+  confidence_drop_precision: mean=0.6800, variance=0.025600
+  confidence_drop_recall: mean=0.6800, variance=0.025600
+  confidence_drop_overlap: mean=0.6800, variance=0.025600
+  hybrid_precision: mean=0.6400, variance=0.006400
+  hybrid_recall: mean=0.6400, variance=0.006400
+  hybrid_overlap: mean=0.6400, variance=0.006400
+  ulia_known_k_precision: mean=0.5600, variance=0.006400
+  ulia_known_k_recall: mean=0.5600, variance=0.006400
+  ulia_known_k_overlap: mean=0.5600, variance=0.006400
+  ulia_dynamic_precision: mean=0.9000, variance=0.040000
+  ulia_dynamic_recall: mean=0.2400, variance=0.006400
+  ulia_dynamic_overlap: mean=0.2400, variance=0.006400
+  before_exclusive_strength_ratio: mean=0.4857, variance=0.051532
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.8000, variance=0.016000
+  clip_concept_precision: mean=0.5639, variance=0.004444
+  clip_weighted_coverage: mean=0.7066, variance=0.010124
+  feature_overlap@1: mean=0.2000, variance=0.160000
+  feature_overlap@5: mean=0.5200, variance=0.041600
+  feature_overlap@10: mean=0.7200, variance=0.001600
+
+
+Hessian unlearning summary across seeds:
+Ratio: 0.03
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8701, variance=0.000003
+  mia_acc_before: mean=0.5830, variance=0.000092
+  mia_acc_after: mean=0.5808, variance=0.000201
+  feature_vote_precision: mean=0.5200, variance=0.025600
+  feature_vote_recall: mean=0.5200, variance=0.025600
+  feature_vote_overlap: mean=0.5200, variance=0.025600
+  delta_z_precision: mean=0.4800, variance=0.025600
+  delta_z_recall: mean=0.4800, variance=0.025600
+  delta_z_overlap: mean=0.4800, variance=0.025600
+  confidence_drop_precision: mean=0.6800, variance=0.025600
+  confidence_drop_recall: mean=0.6800, variance=0.025600
+  confidence_drop_overlap: mean=0.6800, variance=0.025600
+  hybrid_precision: mean=0.6800, variance=0.025600
+  hybrid_recall: mean=0.6800, variance=0.025600
+  hybrid_overlap: mean=0.6800, variance=0.025600
+  ulia_known_k_precision: mean=0.5600, variance=0.006400
+  ulia_known_k_recall: mean=0.5600, variance=0.006400
+  ulia_known_k_overlap: mean=0.5600, variance=0.006400
+  ulia_dynamic_precision: mean=0.9000, variance=0.040000
+  ulia_dynamic_recall: mean=0.2400, variance=0.006400
+  ulia_dynamic_overlap: mean=0.2400, variance=0.006400
+  before_exclusive_strength_ratio: mean=0.4181, variance=0.054451
+  target_label_feature_coverage: mean=0.9200, variance=0.009600
+  clip_concept_coverage: mean=0.7600, variance=0.022400
+  clip_concept_precision: mean=0.4894, variance=0.003470
+  clip_weighted_coverage: mean=0.6510, variance=0.014933
+  feature_overlap@1: mean=0.6000, variance=0.240000
+  feature_overlap@5: mean=0.5200, variance=0.041600
+  feature_overlap@10: mean=0.6000, variance=0.008000
+
+
+
+Hessian unlearning summary across seeds:
+Ratio: 0.05
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8702, variance=0.000002
+  mia_acc_before: mean=0.5806, variance=0.000031
+  mia_acc_after: mean=0.5845, variance=0.000069
+  feature_vote_precision: mean=0.5200, variance=0.009600
+  feature_vote_recall: mean=0.5200, variance=0.009600
+  feature_vote_overlap: mean=0.5200, variance=0.009600
+  delta_z_precision: mean=0.4800, variance=0.041600
+  delta_z_recall: mean=0.4800, variance=0.041600
+  delta_z_overlap: mean=0.4800, variance=0.041600
+  confidence_drop_precision: mean=0.6800, variance=0.025600
+  confidence_drop_recall: mean=0.6800, variance=0.025600
+  confidence_drop_overlap: mean=0.6800, variance=0.025600
+  hybrid_precision: mean=0.5600, variance=0.022400
+  hybrid_recall: mean=0.5600, variance=0.022400
+  hybrid_overlap: mean=0.5600, variance=0.022400
+  ulia_known_k_precision: mean=0.5600, variance=0.006400
+  ulia_known_k_recall: mean=0.5600, variance=0.006400
+  ulia_known_k_overlap: mean=0.5600, variance=0.006400
+  ulia_dynamic_precision: mean=0.9000, variance=0.040000
+  ulia_dynamic_recall: mean=0.2400, variance=0.006400
+  ulia_dynamic_overlap: mean=0.2400, variance=0.006400
+  before_exclusive_strength_ratio: mean=0.5784, variance=0.054373
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.7200, variance=0.041600
+  clip_concept_precision: mean=0.5230, variance=0.006554
+  clip_weighted_coverage: mean=0.6449, variance=0.033437
+  feature_overlap@1: mean=0.2000, variance=0.160000
+  feature_overlap@5: mean=0.6000, variance=0.048000
+  feature_overlap@10: mean=0.6600, variance=0.018400
+
+
+Hessian unlearning summary across seeds:
+Ratio: 0.05
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8701, variance=0.000002
+  mia_acc_before: mean=0.5823, variance=0.000032
+  mia_acc_after: mean=0.5788, variance=0.000153
+  feature_vote_precision: mean=0.5600, variance=0.022400
+  feature_vote_recall: mean=0.5600, variance=0.022400
+  feature_vote_overlap: mean=0.5600, variance=0.022400
+  delta_z_precision: mean=0.4800, variance=0.041600
+  delta_z_recall: mean=0.4800, variance=0.041600
+  delta_z_overlap: mean=0.4800, variance=0.041600
+  confidence_drop_precision: mean=0.6400, variance=0.022400
+  confidence_drop_recall: mean=0.6400, variance=0.022400
+  confidence_drop_overlap: mean=0.6400, variance=0.022400
+  hybrid_precision: mean=0.6400, variance=0.006400
+  hybrid_recall: mean=0.6400, variance=0.006400
+  hybrid_overlap: mean=0.6400, variance=0.006400
+  ulia_known_k_precision: mean=0.5200, variance=0.009600
+  ulia_known_k_recall: mean=0.5200, variance=0.009600
+  ulia_known_k_overlap: mean=0.5200, variance=0.009600
+  ulia_dynamic_precision: mean=0.9000, variance=0.040000
+  ulia_dynamic_recall: mean=0.2800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.2800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.5178, variance=0.034152
+  target_label_feature_coverage: mean=1.0000, variance=0.000000
+  clip_concept_coverage: mean=0.8800, variance=0.009600
+  clip_concept_precision: mean=0.5944, variance=0.004198
+  clip_weighted_coverage: mean=0.7817, variance=0.005611
+  feature_overlap@1: mean=0.6000, variance=0.240000
+  feature_overlap@5: mean=0.4800, variance=0.025600
+  feature_overlap@10: mean=0.6400, variance=0.010400
+
+
+
+
+RFU summary across seeds:
+Ratio: 0.01
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8688, variance=0.000001
+  mia_acc_before: mean=0.5806, variance=0.000072
+  mia_acc_after: mean=0.5778, variance=0.000153
+  feature_vote_precision: mean=0.5333, variance=0.012444
+  feature_vote_recall: mean=0.4800, variance=0.009600
+  feature_vote_overlap: mean=0.4800, variance=0.009600
+  delta_z_precision: mean=0.6000, variance=0.016000
+  delta_z_recall: mean=0.6000, variance=0.016000
+  delta_z_overlap: mean=0.6000, variance=0.016000
+  confidence_drop_precision: mean=0.7600, variance=0.038400
+  confidence_drop_recall: mean=0.7600, variance=0.038400
+  confidence_drop_overlap: mean=0.7600, variance=0.038400
+  hybrid_precision: mean=0.6400, variance=0.054400
+  hybrid_recall: mean=0.6400, variance=0.054400
+  hybrid_overlap: mean=0.6400, variance=0.054400
+  ulia_known_k_precision: mean=0.5200, variance=0.009600
+  ulia_known_k_recall: mean=0.5200, variance=0.009600
+  ulia_known_k_overlap: mean=0.5200, variance=0.009600
+  ulia_dynamic_precision: mean=1.0000, variance=0.000000
+  ulia_dynamic_recall: mean=0.2800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.2800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.5749, variance=0.075415
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.8000, variance=0.048000
+  clip_concept_precision: mean=0.5622, variance=0.003141
+  clip_weighted_coverage: mean=0.7317, variance=0.034646
+  feature_overlap@1: mean=0.0000, variance=0.000000
+  feature_overlap@5: mean=0.4800, variance=0.009600
+  feature_overlap@10: mean=0.6800, variance=0.017600
+
+
+
+RFU summary across seeds:
+Ratio: 0.02
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8684, variance=0.000003
+  mia_acc_before: mean=0.5807, variance=0.000055
+  mia_acc_after: mean=0.5856, variance=0.000040
+  feature_vote_precision: mean=0.4400, variance=0.006400
+  feature_vote_recall: mean=0.4400, variance=0.006400
+  feature_vote_overlap: mean=0.4400, variance=0.006400
+  delta_z_precision: mean=0.6800, variance=0.025600
+  delta_z_recall: mean=0.6800, variance=0.025600
+  delta_z_overlap: mean=0.6800, variance=0.025600
+  confidence_drop_precision: mean=0.8000, variance=0.016000
+  confidence_drop_recall: mean=0.8000, variance=0.016000
+  confidence_drop_overlap: mean=0.8000, variance=0.016000
+  hybrid_precision: mean=0.6800, variance=0.041600
+  hybrid_recall: mean=0.6800, variance=0.041600
+  hybrid_overlap: mean=0.6800, variance=0.041600
+  ulia_known_k_precision: mean=0.6400, variance=0.038400
+  ulia_known_k_recall: mean=0.6400, variance=0.038400
+  ulia_known_k_overlap: mean=0.6400, variance=0.038400
+  ulia_dynamic_precision: mean=1.0000, variance=0.000000
+  ulia_dynamic_recall: mean=0.2400, variance=0.006400
+  ulia_dynamic_overlap: mean=0.2400, variance=0.006400
+  before_exclusive_strength_ratio: mean=0.3386, variance=0.012735
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.7200, variance=0.041600
+  clip_concept_precision: mean=0.5789, variance=0.012054
+  clip_weighted_coverage: mean=0.6537, variance=0.029902
+  feature_overlap@1: mean=0.2000, variance=0.160000
+  feature_overlap@5: mean=0.6400, variance=0.022400
+  feature_overlap@10: mean=0.7000, variance=0.012000
+
+
+
+RFU summary across seeds:
+Ratio: 0.03
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8672, variance=0.000002
+  mia_acc_before: mean=0.5873, variance=0.000079
+  mia_acc_after: mean=0.5841, variance=0.000021
+  feature_vote_precision: mean=0.4800, variance=0.009600
+  feature_vote_recall: mean=0.4800, variance=0.009600
+  feature_vote_overlap: mean=0.4800, variance=0.009600
+  delta_z_precision: mean=0.7200, variance=0.009600
+  delta_z_recall: mean=0.7200, variance=0.009600
+  delta_z_overlap: mean=0.7200, variance=0.009600
+  confidence_drop_precision: mean=0.8800, variance=0.009600
+  confidence_drop_recall: mean=0.8800, variance=0.009600
+  confidence_drop_overlap: mean=0.8800, variance=0.009600
+  hybrid_precision: mean=0.6000, variance=0.032000
+  hybrid_recall: mean=0.6000, variance=0.032000
+  hybrid_overlap: mean=0.6000, variance=0.032000
+  ulia_known_k_precision: mean=0.6000, variance=0.016000
+  ulia_known_k_recall: mean=0.6000, variance=0.016000
+  ulia_known_k_overlap: mean=0.6000, variance=0.016000
+  ulia_dynamic_precision: mean=1.0000, variance=0.000000
+  ulia_dynamic_recall: mean=0.3600, variance=0.006400
+  ulia_dynamic_overlap: mean=0.3600, variance=0.006400
+  before_exclusive_strength_ratio: mean=0.4719, variance=0.039123
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.7200, variance=0.025600
+  clip_concept_precision: mean=0.5183, variance=0.005789
+  clip_weighted_coverage: mean=0.6396, variance=0.014793
+  feature_overlap@1: mean=0.4000, variance=0.240000
+  feature_overlap@5: mean=0.6800, variance=0.057600
+  feature_overlap@10: mean=0.7200, variance=0.017600
+
+
+
+RFU summary across seeds:
+Ratio: 0.04
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8667, variance=0.000002
+  mia_acc_before: mean=0.5832, variance=0.000034
+  mia_acc_after: mean=0.5827, variance=0.000034
+  feature_vote_precision: mean=0.5200, variance=0.009600
+  feature_vote_recall: mean=0.5200, variance=0.009600
+  feature_vote_overlap: mean=0.5200, variance=0.009600
+  delta_z_precision: mean=0.7200, variance=0.009600
+  delta_z_recall: mean=0.7200, variance=0.009600
+  delta_z_overlap: mean=0.7200, variance=0.009600
+  confidence_drop_precision: mean=0.9200, variance=0.009600
+  confidence_drop_recall: mean=0.9200, variance=0.009600
+  confidence_drop_overlap: mean=0.9200, variance=0.009600
+  hybrid_precision: mean=0.6400, variance=0.006400
+  hybrid_recall: mean=0.6400, variance=0.006400
+  hybrid_overlap: mean=0.6400, variance=0.006400
+  ulia_known_k_precision: mean=0.5600, variance=0.022400
+  ulia_known_k_recall: mean=0.5600, variance=0.022400
+  ulia_known_k_overlap: mean=0.5600, variance=0.022400
+  ulia_dynamic_precision: mean=0.9000, variance=0.040000
+  ulia_dynamic_recall: mean=0.2800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.2800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.4863, variance=0.011813
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.8400, variance=0.022400
+  clip_concept_precision: mean=0.5556, variance=0.008642
+  clip_weighted_coverage: mean=0.7476, variance=0.018236
+  feature_overlap@1: mean=0.6000, variance=0.240000
+  feature_overlap@5: mean=0.5200, variance=0.025600
+  feature_overlap@10: mean=0.7000, variance=0.012000
+
+
+RFU summary across seeds:
+Ratio: 0.05
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8674, variance=0.000002
+  mia_acc_before: mean=0.5822, variance=0.000063
+  mia_acc_after: mean=0.5792, variance=0.000017
+  feature_vote_precision: mean=0.4400, variance=0.054400
+  feature_vote_recall: mean=0.4400, variance=0.054400
+  feature_vote_overlap: mean=0.4400, variance=0.054400
+  delta_z_precision: mean=0.6800, variance=0.025600
+  delta_z_recall: mean=0.6800, variance=0.025600
+  delta_z_overlap: mean=0.6800, variance=0.025600
+  confidence_drop_precision: mean=0.8000, variance=0.000000
+  confidence_drop_recall: mean=0.8000, variance=0.000000
+  confidence_drop_overlap: mean=0.8000, variance=0.000000
+  hybrid_precision: mean=0.6400, variance=0.022400
+  hybrid_recall: mean=0.6400, variance=0.022400
+  hybrid_overlap: mean=0.6400, variance=0.022400
+  ulia_known_k_precision: mean=0.6000, variance=0.000000
+  ulia_known_k_recall: mean=0.6000, variance=0.000000
+  ulia_known_k_overlap: mean=0.6000, variance=0.000000
+  ulia_dynamic_precision: mean=1.0000, variance=0.000000
+  ulia_dynamic_recall: mean=0.2800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.2800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.4030, variance=0.034017
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.8000, variance=0.064000
+  clip_concept_precision: mean=0.5844, variance=0.003585
+  clip_weighted_coverage: mean=0.7302, variance=0.048602
+  feature_overlap@1: mean=0.2000, variance=0.160000
+  feature_overlap@5: mean=0.6000, variance=0.032000
+  feature_overlap@10: mean=0.6600, variance=0.002400
+
+
+
+FL retraining summary across seeds:
+Ratio: 0.01
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8766, variance=0.000003
+  mia_acc_before: mean=0.5847, variance=0.000045
+  mia_acc_after: mean=0.5834, variance=0.000033
+  feature_vote_precision: mean=0.4067, variance=0.050844
+  feature_vote_recall: mean=0.3600, variance=0.054400
+  feature_vote_overlap: mean=0.3600, variance=0.054400
+  delta_z_precision: mean=0.6400, variance=0.006400
+  delta_z_recall: mean=0.6400, variance=0.006400
+  delta_z_overlap: mean=0.6400, variance=0.006400
+  confidence_drop_precision: mean=0.6000, variance=0.000000
+  confidence_drop_recall: mean=0.6000, variance=0.000000
+  confidence_drop_overlap: mean=0.6000, variance=0.000000
+  hybrid_precision: mean=0.5600, variance=0.006400
+  hybrid_recall: mean=0.5600, variance=0.006400
+  hybrid_overlap: mean=0.5600, variance=0.006400
+  ulia_known_k_precision: mean=0.5600, variance=0.022400
+  ulia_known_k_recall: mean=0.5600, variance=0.022400
+  ulia_known_k_overlap: mean=0.5600, variance=0.022400
+  ulia_dynamic_precision: mean=0.2000, variance=0.060000
+  ulia_dynamic_recall: mean=0.0800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.0800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.1820, variance=0.023006
+  target_label_feature_coverage: mean=0.7600, variance=0.006400
+  clip_concept_coverage: mean=0.4800, variance=0.073600
+  clip_concept_precision: mean=0.4944, variance=0.063086
+  clip_weighted_coverage: mean=0.4120, variance=0.058378
+  feature_overlap@1: mean=0.6000, variance=0.240000
+  feature_overlap@5: mean=0.7200, variance=0.009600
+  feature_overlap@10: mean=0.9200, variance=0.005600
+
+
+FL retraining summary across seeds:
+Ratio: 0.02
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.7206, variance=0.096295
+  mia_acc_before: mean=0.5862, variance=0.000037
+  mia_acc_after: mean=0.5691, variance=0.001211
+  feature_vote_precision: mean=0.3200, variance=0.069600
+  feature_vote_recall: mean=0.2400, variance=0.054400
+  feature_vote_overlap: mean=0.2400, variance=0.054400
+  delta_z_precision: mean=0.6400, variance=0.038400
+  delta_z_recall: mean=0.6400, variance=0.038400
+  delta_z_overlap: mean=0.6400, variance=0.038400
+  confidence_drop_precision: mean=0.6800, variance=0.041600
+  confidence_drop_recall: mean=0.6800, variance=0.041600
+  confidence_drop_overlap: mean=0.6800, variance=0.041600
+  hybrid_precision: mean=0.7200, variance=0.025600
+  hybrid_recall: mean=0.7200, variance=0.025600
+  hybrid_overlap: mean=0.7200, variance=0.025600
+  ulia_known_k_precision: mean=0.6800, variance=0.041600
+  ulia_known_k_recall: mean=0.6800, variance=0.041600
+  ulia_known_k_overlap: mean=0.6800, variance=0.041600
+  ulia_dynamic_precision: mean=0.4000, variance=0.140000
+  ulia_dynamic_recall: mean=0.1200, variance=0.009600
+  ulia_dynamic_overlap: mean=0.1200, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.1541, variance=0.011587
+  target_label_feature_coverage: mean=0.7200, variance=0.041600
+  clip_concept_coverage: mean=0.3600, variance=0.054400
+  clip_concept_precision: mean=0.4333, variance=0.062222
+  clip_weighted_coverage: mean=0.3183, variance=0.046550
+  feature_overlap@1: mean=0.6000, variance=0.240000
+  feature_overlap@5: mean=0.7200, variance=0.073600
+  feature_overlap@10: mean=0.9400, variance=0.002400
+
+
+
+FL retraining summary across seeds:
+Ratio: 0.03
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8745, variance=0.000003
+  mia_acc_before: mean=0.5833, variance=0.000047
+  mia_acc_after: mean=0.5842, variance=0.000082
+  feature_vote_precision: mean=0.2933, variance=0.086400
+  feature_vote_recall: mean=0.2400, variance=0.086400
+  feature_vote_overlap: mean=0.2400, variance=0.086400
+  delta_z_precision: mean=0.6000, variance=0.000000
+  delta_z_recall: mean=0.6000, variance=0.000000
+  delta_z_overlap: mean=0.6000, variance=0.000000
+  confidence_drop_precision: mean=0.5200, variance=0.009600
+  confidence_drop_recall: mean=0.5200, variance=0.009600
+  confidence_drop_overlap: mean=0.5200, variance=0.009600
+  hybrid_precision: mean=0.5600, variance=0.022400
+  hybrid_recall: mean=0.5600, variance=0.022400
+  hybrid_overlap: mean=0.5600, variance=0.022400
+  ulia_known_k_precision: mean=0.5600, variance=0.022400
+  ulia_known_k_recall: mean=0.5600, variance=0.022400
+  ulia_known_k_overlap: mean=0.5600, variance=0.022400
+  ulia_dynamic_precision: mean=0.2000, variance=0.060000
+  ulia_dynamic_recall: mean=0.0800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.0800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.0769, variance=0.002633
+  target_label_feature_coverage: mean=0.9600, variance=0.006400
+  clip_concept_coverage: mean=0.3600, variance=0.070400
+  clip_concept_precision: mean=0.4333, variance=0.062222
+  clip_weighted_coverage: mean=0.3176, variance=0.063237
+  feature_overlap@1: mean=0.2000, variance=0.160000
+  feature_overlap@5: mean=0.6800, variance=0.025600
+  feature_overlap@10: mean=0.8800, variance=0.005600
+
+
+
+FL retraining summary across seeds:
+Ratio:0.04
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.7189, variance=0.095752
+  mia_acc_before: mean=0.5752, variance=0.000099
+  mia_acc_after: mean=0.5690, variance=0.001233
+  feature_vote_precision: mean=0.5367, variance=0.102711
+  feature_vote_recall: mean=0.4800, variance=0.105600
+  feature_vote_overlap: mean=0.4800, variance=0.105600
+  delta_z_precision: mean=0.6800, variance=0.041600
+  delta_z_recall: mean=0.6800, variance=0.041600
+  delta_z_overlap: mean=0.6800, variance=0.041600
+  confidence_drop_precision: mean=0.6800, variance=0.025600
+  confidence_drop_recall: mean=0.6800, variance=0.025600
+  confidence_drop_overlap: mean=0.6800, variance=0.025600
+  hybrid_precision: mean=0.6800, variance=0.025600
+  hybrid_recall: mean=0.6800, variance=0.025600
+  hybrid_overlap: mean=0.6800, variance=0.025600
+  ulia_known_k_precision: mean=0.6800, variance=0.041600
+  ulia_known_k_recall: mean=0.6800, variance=0.041600
+  ulia_known_k_overlap: mean=0.6800, variance=0.041600
+  ulia_dynamic_precision: mean=0.4000, variance=0.140000
+  ulia_dynamic_recall: mean=0.1200, variance=0.009600
+  ulia_dynamic_overlap: mean=0.1200, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.1413, variance=0.008700
+  target_label_feature_coverage: mean=0.7200, variance=0.025600
+  clip_concept_coverage: mean=0.4400, variance=0.054400
+  clip_concept_precision: mean=0.4444, variance=0.053086
+  clip_weighted_coverage: mean=0.3896, variance=0.042618
+  feature_overlap@1: mean=0.8000, variance=0.160000
+  feature_overlap@5: mean=0.7200, variance=0.041600
+  feature_overlap@10: mean=0.9600, variance=0.006400
+
+
+
+FL retraining summary across seeds:
+Ratio:0.05
+  acc_before: mean=0.8673, variance=0.000000
+  acc_after: mean=0.8757, variance=0.000009
+  mia_acc_before: mean=0.5800, variance=0.000076
+  mia_acc_after: mean=0.5842, variance=0.000031
+  feature_vote_precision: mean=0.4033, variance=0.034267
+  feature_vote_recall: mean=0.3200, variance=0.025600
+  feature_vote_overlap: mean=0.3200, variance=0.025600
+  delta_z_precision: mean=0.6400, variance=0.022400
+  delta_z_recall: mean=0.6400, variance=0.022400
+  delta_z_overlap: mean=0.6400, variance=0.022400
+  confidence_drop_precision: mean=0.6000, variance=0.000000
+  confidence_drop_recall: mean=0.6000, variance=0.000000
+  confidence_drop_overlap: mean=0.6000, variance=0.000000
+  hybrid_precision: mean=0.5200, variance=0.009600
+  hybrid_recall: mean=0.5200, variance=0.009600
+  hybrid_overlap: mean=0.5200, variance=0.009600
+  ulia_known_k_precision: mean=0.5600, variance=0.022400
+  ulia_known_k_recall: mean=0.5600, variance=0.022400
+  ulia_known_k_overlap: mean=0.5600, variance=0.022400
+  ulia_dynamic_precision: mean=0.2000, variance=0.060000
+  ulia_dynamic_recall: mean=0.0800, variance=0.009600
+  ulia_dynamic_overlap: mean=0.0800, variance=0.009600
+  before_exclusive_strength_ratio: mean=0.2036, variance=0.013827
+  target_label_feature_coverage: mean=0.8000, variance=0.016000
+  clip_concept_coverage: mean=0.5600, variance=0.022400
+  clip_concept_precision: mean=0.5833, variance=0.005556
+  clip_weighted_coverage: mean=0.4930, variance=0.020380
+  feature_overlap@1: mean=0.0000, variance=0.000000
+  feature_overlap@5: mean=0.6400, variance=0.022400
+  feature_overlap@10: mean=0.8800, variance=0.005600

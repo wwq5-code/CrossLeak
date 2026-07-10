@@ -1,0 +1,1474 @@
+dataset=MNIST
+cuda=False
+num_epochs=10
+explainer_type=ResNet_4x
+xpl_channels=1
+k=12
+beta=0.0001
+unlearning_ratio=0.05
+ot_fusion_alpha=1.0
+mia_max_samples=1000
+mia_attack_epochs=200
+mia_attack_lr=0.01
+num_samples=4
+gpu=0
+device=cuda:0
+iid=True
+add_noise=False
+mse_rate=0.1
+lr=0.0001
+dimZ=512
+batch_size=100
+num_clients=10
+num_unlearn_clients=3
+global_rounds=1
+local_epochs=1
+frac=1.0
+seeds=[0, 1, 2, 3, 4]
+results_dir=/home/wwq/PerFU/PerFU/On_MNIST
+device cuda:0
+multi-seed OTFU evaluation seeds: [0, 1, 2, 3, 4]
+
+===== OTFU seed=0 =====
+Loaded checkpoint from round: 40
+/home/wwq/PerFU/PerFU/On_MNIST/IB_FL_local_OT_fusion.py:267: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:78.)
+  eps = torch.cuda.FloatTensor(std.size()).normal_()
+epoch 40, loaded model (seed=0) accuracy:  0.9872, total_num:10000
+
+===== OTFU test: num_unlearn_clients=1 =====
+Chosen clients for unlearning: [2]
+300
+[0/10:  0] acc_back 0.990, loss1 -0.004, KLD_mean 2.491, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.501, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 0.003, KLD_mean 2.492, mu 0.028
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.8140s
+epoch 1, after OT fusion unlearning (1 clients) accuracy:  0.9855, total_num:10000
+epoch 1, erased data (1 clients) accuracy:  0.9933, total_num:300
+
+Learned MIA results for before unlearning (1 clients):
+  MIA acc=0.5230, MIA AUC=0.5428
+
+Learned MIA results for after OT fusion unlearning (1 clients):
+  MIA acc=0.5160, MIA AUC=0.5368
+OTFU sweep result: num_unlearn_clients=1, chosen_ids=[2], acc_after=0.9855, erased_acc=0.9933, mia_before_mia_acc=0.5230, mia_before_mia_auc=0.5428, mia_after_mia_acc=0.5160, mia_after_mia_auc=0.5368, running_time=0.8140s
+
+===== OTFU test: num_unlearn_clients=2 =====
+Chosen clients for unlearning: [2, 8]
+300
+[0/10:  0] acc_back 1.000, loss1 0.025, KLD_mean 2.489, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.006, KLD_mean 2.463, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.463, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.497, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.007, KLD_mean 2.476, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.440, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6968s
+epoch 1, after OT fusion unlearning (2 clients) accuracy:  0.9866, total_num:10000
+epoch 1, erased data (2 clients) accuracy:  0.9950, total_num:600
+
+Learned MIA results for before unlearning (2 clients):
+  MIA acc=0.5270, MIA AUC=0.5496
+
+Learned MIA results for after OT fusion unlearning (2 clients):
+  MIA acc=0.5205, MIA AUC=0.5272
+OTFU sweep result: num_unlearn_clients=2, chosen_ids=[2, 8], acc_after=0.9866, erased_acc=0.9950, mia_before_mia_acc=0.5270, mia_before_mia_auc=0.5496, mia_after_mia_acc=0.5205, mia_after_mia_auc=0.5272, running_time=0.6968s
+
+===== OTFU test: num_unlearn_clients=3 =====
+Chosen clients for unlearning: [2, 8, 4]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.482, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 0.033, KLD_mean 2.514, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.461, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.504, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.453, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.466, mu 0.021
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.472, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.464, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.006, KLD_mean 2.483, mu 0.022
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7209s
+epoch 1, after OT fusion unlearning (3 clients) accuracy:  0.9864, total_num:10000
+epoch 1, erased data (3 clients) accuracy:  0.9978, total_num:900
+
+Learned MIA results for before unlearning (3 clients):
+  MIA acc=0.5215, MIA AUC=0.5329
+
+Learned MIA results for after OT fusion unlearning (3 clients):
+  MIA acc=0.5260, MIA AUC=0.5335
+OTFU sweep result: num_unlearn_clients=3, chosen_ids=[2, 8, 4], acc_after=0.9864, erased_acc=0.9978, mia_before_mia_acc=0.5215, mia_before_mia_auc=0.5329, mia_after_mia_acc=0.5260, mia_after_mia_auc=0.5335, running_time=0.7209s
+
+===== OTFU test: num_unlearn_clients=4 =====
+Chosen clients for unlearning: [2, 8, 4, 9]
+300
+[0/10:  0] acc_back 1.000, loss1 0.005, KLD_mean 2.436, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.501, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.015, KLD_mean 2.520, mu 0.023
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.474, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.467, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.459, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 -0.000, KLD_mean 2.476, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.008, KLD_mean 2.459, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.464, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 -0.004, KLD_mean 2.481, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.456, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.016, KLD_mean 2.512, mu 0.029
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 1.1780s
+epoch 1, after OT fusion unlearning (4 clients) accuracy:  0.9865, total_num:10000
+epoch 1, erased data (4 clients) accuracy:  0.9958, total_num:1200
+
+Learned MIA results for before unlearning (4 clients):
+  MIA acc=0.5155, MIA AUC=0.5391
+
+Learned MIA results for after OT fusion unlearning (4 clients):
+  MIA acc=0.5165, MIA AUC=0.5283
+OTFU sweep result: num_unlearn_clients=4, chosen_ids=[2, 8, 4, 9], acc_after=0.9865, erased_acc=0.9958, mia_before_mia_acc=0.5155, mia_before_mia_auc=0.5391, mia_after_mia_acc=0.5165, mia_after_mia_auc=0.5283, running_time=1.1780s
+
+===== OTFU test: num_unlearn_clients=5 =====
+Chosen clients for unlearning: [2, 8, 4, 9, 1]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.443, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.442, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.499, mu 0.029
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.466, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 0.018, KLD_mean 2.495, mu 0.027
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.505, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.011, KLD_mean 2.479, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.008, KLD_mean 2.447, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.482, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.489, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.498, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 0.980, loss1 -0.017, KLD_mean 2.437, mu 0.027
+0.9799999594688416
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.459, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.005, KLD_mean 2.490, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.008, KLD_mean 2.465, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7029s
+epoch 1, after OT fusion unlearning (5 clients) accuracy:  0.9870, total_num:10000
+epoch 1, erased data (5 clients) accuracy:  0.9993, total_num:1500
+
+Learned MIA results for before unlearning (5 clients):
+  MIA acc=0.5335, MIA AUC=0.5424
+
+Learned MIA results for after OT fusion unlearning (5 clients):
+  MIA acc=0.5330, MIA AUC=0.5437
+OTFU sweep result: num_unlearn_clients=5, chosen_ids=[2, 8, 4, 9, 1], acc_after=0.9870, erased_acc=0.9993, mia_before_mia_acc=0.5335, mia_before_mia_auc=0.5424, mia_after_mia_acc=0.5330, mia_after_mia_auc=0.5437, running_time=0.7029s
+
+===== OTFU sweep summary (seed=0) =====
+clients=1, seed=0, acc_after=0.9855, erased_acc=0.9933, mia_before_mia_acc=0.5230, mia_before_mia_auc=0.5428, mia_after_mia_acc=0.5160, mia_after_mia_auc=0.5368, running_time=0.8140s
+clients=2, seed=0, acc_after=0.9866, erased_acc=0.9950, mia_before_mia_acc=0.5270, mia_before_mia_auc=0.5496, mia_after_mia_acc=0.5205, mia_after_mia_auc=0.5272, running_time=0.6968s
+clients=3, seed=0, acc_after=0.9864, erased_acc=0.9978, mia_before_mia_acc=0.5215, mia_before_mia_auc=0.5329, mia_after_mia_acc=0.5260, mia_after_mia_auc=0.5335, running_time=0.7209s
+clients=4, seed=0, acc_after=0.9865, erased_acc=0.9958, mia_before_mia_acc=0.5155, mia_before_mia_auc=0.5391, mia_after_mia_acc=0.5165, mia_after_mia_auc=0.5283, running_time=1.1780s
+clients=5, seed=0, acc_after=0.9870, erased_acc=0.9993, mia_before_mia_acc=0.5335, mia_before_mia_auc=0.5424, mia_after_mia_acc=0.5330, mia_after_mia_auc=0.5437, running_time=0.7029s
+
+===== OTFU seed=1 =====
+Loaded checkpoint from round: 40
+epoch 40, loaded model (seed=1) accuracy:  0.9870, total_num:10000
+
+===== OTFU test: num_unlearn_clients=1 =====
+Chosen clients for unlearning: [2]
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.449, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.491, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.460, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 1.2090s
+epoch 1, after OT fusion unlearning (1 clients) accuracy:  0.9805, total_num:10000
+epoch 1, erased data (1 clients) accuracy:  0.9833, total_num:300
+
+Learned MIA results for before unlearning (1 clients):
+  MIA acc=0.5320, MIA AUC=0.5427
+
+Learned MIA results for after OT fusion unlearning (1 clients):
+  MIA acc=0.5260, MIA AUC=0.5482
+OTFU sweep result: num_unlearn_clients=1, chosen_ids=[2], acc_after=0.9805, erased_acc=0.9833, mia_before_mia_acc=0.5320, mia_before_mia_auc=0.5427, mia_after_mia_acc=0.5260, mia_after_mia_auc=0.5482, running_time=1.2090s
+
+===== OTFU test: num_unlearn_clients=2 =====
+Chosen clients for unlearning: [2, 9]
+300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.475, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.457, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.457, mu 0.021
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.445, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.006, KLD_mean 2.461, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.444, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6761s
+epoch 1, after OT fusion unlearning (2 clients) accuracy:  0.9864, total_num:10000
+epoch 1, erased data (2 clients) accuracy:  0.9967, total_num:600
+
+Learned MIA results for before unlearning (2 clients):
+  MIA acc=0.5340, MIA AUC=0.5606
+
+Learned MIA results for after OT fusion unlearning (2 clients):
+  MIA acc=0.5245, MIA AUC=0.5460
+OTFU sweep result: num_unlearn_clients=2, chosen_ids=[2, 9], acc_after=0.9864, erased_acc=0.9967, mia_before_mia_acc=0.5340, mia_before_mia_auc=0.5606, mia_after_mia_acc=0.5245, mia_after_mia_auc=0.5460, running_time=0.6761s
+
+===== OTFU test: num_unlearn_clients=3 =====
+Chosen clients for unlearning: [2, 9, 6]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.004, KLD_mean 2.461, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.005, KLD_mean 2.484, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.005, KLD_mean 2.463, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.456, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.468, mu 0.022
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.485, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.466, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.012, KLD_mean 2.452, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.004, KLD_mean 2.449, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7144s
+epoch 1, after OT fusion unlearning (3 clients) accuracy:  0.9867, total_num:10000
+epoch 1, erased data (3 clients) accuracy:  0.9978, total_num:900
+
+Learned MIA results for before unlearning (3 clients):
+  MIA acc=0.5250, MIA AUC=0.5416
+
+Learned MIA results for after OT fusion unlearning (3 clients):
+  MIA acc=0.5290, MIA AUC=0.5438
+OTFU sweep result: num_unlearn_clients=3, chosen_ids=[2, 9, 6], acc_after=0.9867, erased_acc=0.9978, mia_before_mia_acc=0.5250, mia_before_mia_auc=0.5416, mia_after_mia_acc=0.5290, mia_after_mia_auc=0.5438, running_time=0.7144s
+
+===== OTFU test: num_unlearn_clients=4 =====
+Chosen clients for unlearning: [2, 9, 6, 4]
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.452, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.476, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.479, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.464, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.485, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.477, mu 0.029
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.491, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.484, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.472, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.011, KLD_mean 2.474, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.445, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.455, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7462s
+epoch 1, after OT fusion unlearning (4 clients) accuracy:  0.9871, total_num:10000
+epoch 1, erased data (4 clients) accuracy:  0.9983, total_num:1200
+
+Learned MIA results for before unlearning (4 clients):
+  MIA acc=0.5305, MIA AUC=0.5533
+
+Learned MIA results for after OT fusion unlearning (4 clients):
+  MIA acc=0.5255, MIA AUC=0.5513
+OTFU sweep result: num_unlearn_clients=4, chosen_ids=[2, 9, 6, 4], acc_after=0.9871, erased_acc=0.9983, mia_before_mia_acc=0.5305, mia_before_mia_auc=0.5533, mia_after_mia_acc=0.5255, mia_after_mia_auc=0.5513, running_time=0.7462s
+
+===== OTFU test: num_unlearn_clients=5 =====
+Chosen clients for unlearning: [2, 9, 6, 4, 0]
+300
+[0/10:  0] acc_back 0.990, loss1 -0.007, KLD_mean 2.462, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.479, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+[0/10:  0] acc_back 0.990, loss1 0.003, KLD_mean 2.506, mu 0.027
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9800, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.488, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.456, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.434, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 -0.005, KLD_mean 2.458, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.504, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.455, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.464, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.482, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.482, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.473, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.466, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.980, loss1 -0.014, KLD_mean 2.458, mu 0.025
+0.9799999594688416
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6737s
+epoch 1, after OT fusion unlearning (5 clients) accuracy:  0.9869, total_num:10000
+epoch 1, erased data (5 clients) accuracy:  0.9980, total_num:1500
+
+Learned MIA results for before unlearning (5 clients):
+  MIA acc=0.5470, MIA AUC=0.5648
+
+Learned MIA results for after OT fusion unlearning (5 clients):
+  MIA acc=0.5475, MIA AUC=0.5638
+OTFU sweep result: num_unlearn_clients=5, chosen_ids=[2, 9, 6, 4, 0], acc_after=0.9869, erased_acc=0.9980, mia_before_mia_acc=0.5470, mia_before_mia_auc=0.5648, mia_after_mia_acc=0.5475, mia_after_mia_auc=0.5638, running_time=0.6737s
+
+===== OTFU sweep summary (seed=1) =====
+clients=1, seed=1, acc_after=0.9805, erased_acc=0.9833, mia_before_mia_acc=0.5320, mia_before_mia_auc=0.5427, mia_after_mia_acc=0.5260, mia_after_mia_auc=0.5482, running_time=1.2090s
+clients=2, seed=1, acc_after=0.9864, erased_acc=0.9967, mia_before_mia_acc=0.5340, mia_before_mia_auc=0.5606, mia_after_mia_acc=0.5245, mia_after_mia_auc=0.5460, running_time=0.6761s
+clients=3, seed=1, acc_after=0.9867, erased_acc=0.9978, mia_before_mia_acc=0.5250, mia_before_mia_auc=0.5416, mia_after_mia_acc=0.5290, mia_after_mia_auc=0.5438, running_time=0.7144s
+clients=4, seed=1, acc_after=0.9871, erased_acc=0.9983, mia_before_mia_acc=0.5305, mia_before_mia_auc=0.5533, mia_after_mia_acc=0.5255, mia_after_mia_auc=0.5513, running_time=0.7462s
+clients=5, seed=1, acc_after=0.9869, erased_acc=0.9980, mia_before_mia_acc=0.5470, mia_before_mia_auc=0.5648, mia_after_mia_acc=0.5475, mia_after_mia_auc=0.5638, running_time=0.6737s
+
+===== OTFU seed=2 =====
+Loaded checkpoint from round: 40
+epoch 40, loaded model (seed=2) accuracy:  0.9870, total_num:10000
+
+===== OTFU test: num_unlearn_clients=1 =====
+Chosen clients for unlearning: [4]
+300
+[0/10:  0] acc_back 0.990, loss1 -0.007, KLD_mean 2.479, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.448, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.490, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7160s
+epoch 1, after OT fusion unlearning (1 clients) accuracy:  0.9858, total_num:10000
+epoch 1, erased data (1 clients) accuracy:  0.9933, total_num:300
+
+Learned MIA results for before unlearning (1 clients):
+  MIA acc=0.5335, MIA AUC=0.5814
+
+Learned MIA results for after OT fusion unlearning (1 clients):
+  MIA acc=0.5280, MIA AUC=0.5730
+OTFU sweep result: num_unlearn_clients=1, chosen_ids=[4], acc_after=0.9858, erased_acc=0.9933, mia_before_mia_acc=0.5335, mia_before_mia_auc=0.5814, mia_after_mia_acc=0.5280, mia_after_mia_auc=0.5730, running_time=0.7160s
+
+===== OTFU test: num_unlearn_clients=2 =====
+Chosen clients for unlearning: [4, 1]
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.470, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.484, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.014, KLD_mean 2.470, mu 0.023
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.468, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.004, KLD_mean 2.493, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.448, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7464s
+epoch 1, after OT fusion unlearning (2 clients) accuracy:  0.9864, total_num:10000
+epoch 1, erased data (2 clients) accuracy:  0.9900, total_num:600
+
+Learned MIA results for before unlearning (2 clients):
+  MIA acc=0.5240, MIA AUC=0.5514
+
+Learned MIA results for after OT fusion unlearning (2 clients):
+  MIA acc=0.5330, MIA AUC=0.5434
+OTFU sweep result: num_unlearn_clients=2, chosen_ids=[4, 1], acc_after=0.9864, erased_acc=0.9900, mia_before_mia_acc=0.5240, mia_before_mia_auc=0.5514, mia_after_mia_acc=0.5330, mia_after_mia_auc=0.5434, running_time=0.7464s
+
+===== OTFU test: num_unlearn_clients=3 =====
+Chosen clients for unlearning: [4, 1, 5]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.497, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.475, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.005, KLD_mean 2.463, mu 0.024
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.470, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.447, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.004, KLD_mean 2.477, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 -0.001, KLD_mean 2.438, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.470, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.473, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7258s
+epoch 1, after OT fusion unlearning (3 clients) accuracy:  0.9860, total_num:10000
+epoch 1, erased data (3 clients) accuracy:  0.9944, total_num:900
+
+Learned MIA results for before unlearning (3 clients):
+  MIA acc=0.5230, MIA AUC=0.5402
+
+Learned MIA results for after OT fusion unlearning (3 clients):
+  MIA acc=0.5325, MIA AUC=0.5519
+OTFU sweep result: num_unlearn_clients=3, chosen_ids=[4, 1, 5], acc_after=0.9860, erased_acc=0.9944, mia_before_mia_acc=0.5230, mia_before_mia_auc=0.5402, mia_after_mia_acc=0.5325, mia_after_mia_auc=0.5519, running_time=0.7258s
+
+===== OTFU test: num_unlearn_clients=4 =====
+Chosen clients for unlearning: [4, 1, 5, 0]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.456, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.004, KLD_mean 2.458, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.462, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9800, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.486, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.009, KLD_mean 2.460, mu 0.022
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.008, KLD_mean 2.464, mu 0.023
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.467, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.010, KLD_mean 2.474, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.008, KLD_mean 2.481, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 -0.006, KLD_mean 2.456, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.470, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.010, KLD_mean 2.460, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6855s
+epoch 1, after OT fusion unlearning (4 clients) accuracy:  0.9868, total_num:10000
+epoch 1, erased data (4 clients) accuracy:  0.9983, total_num:1200
+
+Learned MIA results for before unlearning (4 clients):
+  MIA acc=0.5435, MIA AUC=0.5572
+
+Learned MIA results for after OT fusion unlearning (4 clients):
+  MIA acc=0.5305, MIA AUC=0.5554
+OTFU sweep result: num_unlearn_clients=4, chosen_ids=[4, 1, 5, 0], acc_after=0.9868, erased_acc=0.9983, mia_before_mia_acc=0.5435, mia_before_mia_auc=0.5572, mia_after_mia_acc=0.5305, mia_after_mia_auc=0.5554, running_time=0.6855s
+
+===== OTFU test: num_unlearn_clients=5 =====
+Chosen clients for unlearning: [4, 1, 5, 0, 7]
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.497, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.016, KLD_mean 2.450, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.002, KLD_mean 2.430, mu 0.029
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.017, KLD_mean 2.485, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.006, KLD_mean 2.464, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.015, KLD_mean 2.472, mu 0.022
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.481, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.463, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.012, KLD_mean 2.458, mu 0.022
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.484, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.461, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 0.990, loss1 0.009, KLD_mean 2.458, mu 0.024
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.488, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.014, KLD_mean 2.471, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.479, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 1.0505s
+epoch 1, after OT fusion unlearning (5 clients) accuracy:  0.9865, total_num:10000
+epoch 1, erased data (5 clients) accuracy:  0.9987, total_num:1500
+
+Learned MIA results for before unlearning (5 clients):
+  MIA acc=0.5310, MIA AUC=0.5571
+
+Learned MIA results for after OT fusion unlearning (5 clients):
+  MIA acc=0.5320, MIA AUC=0.5702
+OTFU sweep result: num_unlearn_clients=5, chosen_ids=[4, 1, 5, 0, 7], acc_after=0.9865, erased_acc=0.9987, mia_before_mia_acc=0.5310, mia_before_mia_auc=0.5571, mia_after_mia_acc=0.5320, mia_after_mia_auc=0.5702, running_time=1.0505s
+
+===== OTFU sweep summary (seed=2) =====
+clients=1, seed=2, acc_after=0.9858, erased_acc=0.9933, mia_before_mia_acc=0.5335, mia_before_mia_auc=0.5814, mia_after_mia_acc=0.5280, mia_after_mia_auc=0.5730, running_time=0.7160s
+clients=2, seed=2, acc_after=0.9864, erased_acc=0.9900, mia_before_mia_acc=0.5240, mia_before_mia_auc=0.5514, mia_after_mia_acc=0.5330, mia_after_mia_auc=0.5434, running_time=0.7464s
+clients=3, seed=2, acc_after=0.9860, erased_acc=0.9944, mia_before_mia_acc=0.5230, mia_before_mia_auc=0.5402, mia_after_mia_acc=0.5325, mia_after_mia_auc=0.5519, running_time=0.7258s
+clients=4, seed=2, acc_after=0.9868, erased_acc=0.9983, mia_before_mia_acc=0.5435, mia_before_mia_auc=0.5572, mia_after_mia_acc=0.5305, mia_after_mia_auc=0.5554, running_time=0.6855s
+clients=5, seed=2, acc_after=0.9865, erased_acc=0.9987, mia_before_mia_acc=0.5310, mia_before_mia_auc=0.5571, mia_after_mia_acc=0.5320, mia_after_mia_auc=0.5702, running_time=1.0505s
+
+===== OTFU seed=3 =====
+Loaded checkpoint from round: 40
+epoch 40, loaded model (seed=3) accuracy:  0.9873, total_num:10000
+
+===== OTFU test: num_unlearn_clients=1 =====
+Chosen clients for unlearning: [5]
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.465, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.464, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.029, KLD_mean 2.492, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6931s
+epoch 1, after OT fusion unlearning (1 clients) accuracy:  0.9870, total_num:10000
+epoch 1, erased data (1 clients) accuracy:  0.9833, total_num:300
+
+Learned MIA results for before unlearning (1 clients):
+  MIA acc=0.5265, MIA AUC=0.5540
+
+Learned MIA results for after OT fusion unlearning (1 clients):
+  MIA acc=0.5360, MIA AUC=0.5522
+OTFU sweep result: num_unlearn_clients=1, chosen_ids=[5], acc_after=0.9870, erased_acc=0.9833, mia_before_mia_acc=0.5265, mia_before_mia_auc=0.5540, mia_after_mia_acc=0.5360, mia_after_mia_auc=0.5522, running_time=0.6931s
+
+===== OTFU test: num_unlearn_clients=2 =====
+Chosen clients for unlearning: [5, 4]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.483, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.490, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.448, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.477, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.470, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.497, mu 0.022
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6706s
+epoch 1, after OT fusion unlearning (2 clients) accuracy:  0.9874, total_num:10000
+epoch 1, erased data (2 clients) accuracy:  0.9917, total_num:600
+
+Learned MIA results for before unlearning (2 clients):
+  MIA acc=0.5230, MIA AUC=0.5348
+
+Learned MIA results for after OT fusion unlearning (2 clients):
+  MIA acc=0.5350, MIA AUC=0.5392
+OTFU sweep result: num_unlearn_clients=2, chosen_ids=[5, 4], acc_after=0.9874, erased_acc=0.9917, mia_before_mia_acc=0.5230, mia_before_mia_auc=0.5348, mia_after_mia_acc=0.5350, mia_after_mia_auc=0.5392, running_time=0.6706s
+
+===== OTFU test: num_unlearn_clients=3 =====
+Chosen clients for unlearning: [5, 4, 1]
+300
+[0/10:  0] acc_back 0.990, loss1 -0.004, KLD_mean 2.474, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.022, KLD_mean 2.483, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.005, KLD_mean 2.487, mu 0.028
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.491, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.462, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.457, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.499, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.449, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.471, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7297s
+epoch 1, after OT fusion unlearning (3 clients) accuracy:  0.9865, total_num:10000
+epoch 1, erased data (3 clients) accuracy:  0.9967, total_num:900
+
+Learned MIA results for before unlearning (3 clients):
+  MIA acc=0.5305, MIA AUC=0.5445
+
+Learned MIA results for after OT fusion unlearning (3 clients):
+  MIA acc=0.5355, MIA AUC=0.5460
+OTFU sweep result: num_unlearn_clients=3, chosen_ids=[5, 4, 1], acc_after=0.9865, erased_acc=0.9967, mia_before_mia_acc=0.5305, mia_before_mia_auc=0.5445, mia_after_mia_acc=0.5355, mia_after_mia_auc=0.5460, running_time=0.7297s
+
+===== OTFU test: num_unlearn_clients=4 =====
+Chosen clients for unlearning: [5, 4, 1, 2]
+300
+[0/10:  0] acc_back 0.990, loss1 -0.006, KLD_mean 2.483, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.002, KLD_mean 2.459, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.496, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.466, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.497, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.012, KLD_mean 2.495, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.477, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.006, KLD_mean 2.452, mu 0.028
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.495, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.485, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.478, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.452, mu 0.022
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6695s
+epoch 1, after OT fusion unlearning (4 clients) accuracy:  0.9861, total_num:10000
+epoch 1, erased data (4 clients) accuracy:  0.9958, total_num:1200
+
+Learned MIA results for before unlearning (4 clients):
+  MIA acc=0.5225, MIA AUC=0.5561
+
+Learned MIA results for after OT fusion unlearning (4 clients):
+  MIA acc=0.5335, MIA AUC=0.5527
+OTFU sweep result: num_unlearn_clients=4, chosen_ids=[5, 4, 1, 2], acc_after=0.9861, erased_acc=0.9958, mia_before_mia_acc=0.5225, mia_before_mia_auc=0.5561, mia_after_mia_acc=0.5335, mia_after_mia_auc=0.5527, running_time=0.6695s
+
+===== OTFU test: num_unlearn_clients=5 =====
+Chosen clients for unlearning: [5, 4, 1, 2, 9]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.006, KLD_mean 2.468, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.005, KLD_mean 2.479, mu 0.024
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.005, KLD_mean 2.485, mu 0.022
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9667, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.489, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.004, KLD_mean 2.494, mu 0.023
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.497, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 -0.011, KLD_mean 2.475, mu 0.027
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.471, mu 0.022
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.490, mu 0.022
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.458, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.002, KLD_mean 2.487, mu 0.024
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.002, KLD_mean 2.458, mu 0.024
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 0.990, loss1 0.001, KLD_mean 2.477, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.458, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 -0.003, KLD_mean 2.479, mu 0.026
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 1.1045s
+epoch 1, after OT fusion unlearning (5 clients) accuracy:  0.9871, total_num:10000
+epoch 1, erased data (5 clients) accuracy:  0.9967, total_num:1500
+
+Learned MIA results for before unlearning (5 clients):
+  MIA acc=0.5235, MIA AUC=0.5507
+
+Learned MIA results for after OT fusion unlearning (5 clients):
+  MIA acc=0.5255, MIA AUC=0.5532
+OTFU sweep result: num_unlearn_clients=5, chosen_ids=[5, 4, 1, 2, 9], acc_after=0.9871, erased_acc=0.9967, mia_before_mia_acc=0.5235, mia_before_mia_auc=0.5507, mia_after_mia_acc=0.5255, mia_after_mia_auc=0.5532, running_time=1.1045s
+
+===== OTFU sweep summary (seed=3) =====
+clients=1, seed=3, acc_after=0.9870, erased_acc=0.9833, mia_before_mia_acc=0.5265, mia_before_mia_auc=0.5540, mia_after_mia_acc=0.5360, mia_after_mia_auc=0.5522, running_time=0.6931s
+clients=2, seed=3, acc_after=0.9874, erased_acc=0.9917, mia_before_mia_acc=0.5230, mia_before_mia_auc=0.5348, mia_after_mia_acc=0.5350, mia_after_mia_auc=0.5392, running_time=0.6706s
+clients=3, seed=3, acc_after=0.9865, erased_acc=0.9967, mia_before_mia_acc=0.5305, mia_before_mia_auc=0.5445, mia_after_mia_acc=0.5355, mia_after_mia_auc=0.5460, running_time=0.7297s
+clients=4, seed=3, acc_after=0.9861, erased_acc=0.9958, mia_before_mia_acc=0.5225, mia_before_mia_auc=0.5561, mia_after_mia_acc=0.5335, mia_after_mia_auc=0.5527, running_time=0.6695s
+clients=5, seed=3, acc_after=0.9871, erased_acc=0.9967, mia_before_mia_acc=0.5235, mia_before_mia_auc=0.5507, mia_after_mia_acc=0.5255, mia_after_mia_auc=0.5532, running_time=1.1045s
+
+===== OTFU seed=4 =====
+Loaded checkpoint from round: 40
+epoch 40, loaded model (seed=4) accuracy:  0.9874, total_num:10000
+
+===== OTFU test: num_unlearn_clients=1 =====
+Chosen clients for unlearning: [3]
+300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.501, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.466, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.006, KLD_mean 2.453, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6765s
+epoch 1, after OT fusion unlearning (1 clients) accuracy:  0.9848, total_num:10000
+epoch 1, erased data (1 clients) accuracy:  0.9933, total_num:300
+
+Learned MIA results for before unlearning (1 clients):
+  MIA acc=0.5210, MIA AUC=0.5534
+
+Learned MIA results for after OT fusion unlearning (1 clients):
+  MIA acc=0.5295, MIA AUC=0.5706
+OTFU sweep result: num_unlearn_clients=1, chosen_ids=[3], acc_after=0.9848, erased_acc=0.9933, mia_before_mia_acc=0.5210, mia_before_mia_auc=0.5534, mia_after_mia_acc=0.5295, mia_after_mia_auc=0.5706, running_time=0.6765s
+
+===== OTFU test: num_unlearn_clients=2 =====
+Chosen clients for unlearning: [3, 8]
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.465, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.489, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 0.990, loss1 0.001, KLD_mean 2.449, mu 0.024
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9833, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.494, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.468, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.441, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6851s
+epoch 1, after OT fusion unlearning (2 clients) accuracy:  0.9859, total_num:10000
+epoch 1, erased data (2 clients) accuracy:  0.9983, total_num:600
+
+Learned MIA results for before unlearning (2 clients):
+  MIA acc=0.5245, MIA AUC=0.5602
+
+Learned MIA results for after OT fusion unlearning (2 clients):
+  MIA acc=0.5205, MIA AUC=0.5517
+OTFU sweep result: num_unlearn_clients=2, chosen_ids=[3, 8], acc_after=0.9859, erased_acc=0.9983, mia_before_mia_acc=0.5245, mia_before_mia_auc=0.5602, mia_after_mia_acc=0.5205, mia_after_mia_auc=0.5517, running_time=0.6851s
+
+===== OTFU test: num_unlearn_clients=3 =====
+Chosen clients for unlearning: [3, 8, 4]
+300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.462, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.472, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.464, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9867, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.451, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.006, KLD_mean 2.448, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.471, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.479, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.450, mu 0.029
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.470, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7012s
+epoch 1, after OT fusion unlearning (3 clients) accuracy:  0.9871, total_num:10000
+epoch 1, erased data (3 clients) accuracy:  0.9978, total_num:900
+
+Learned MIA results for before unlearning (3 clients):
+  MIA acc=0.5195, MIA AUC=0.5437
+
+Learned MIA results for after OT fusion unlearning (3 clients):
+  MIA acc=0.5220, MIA AUC=0.5406
+OTFU sweep result: num_unlearn_clients=3, chosen_ids=[3, 8, 4], acc_after=0.9871, erased_acc=0.9978, mia_before_mia_acc=0.5195, mia_before_mia_auc=0.5437, mia_after_mia_acc=0.5220, mia_after_mia_auc=0.5406, running_time=0.7012s
+
+===== OTFU test: num_unlearn_clients=4 =====
+Chosen clients for unlearning: [3, 8, 4, 9]
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.469, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.004, KLD_mean 2.450, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.482, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.018, KLD_mean 2.447, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.458, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.443, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.452, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.002, KLD_mean 2.477, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.015, KLD_mean 2.488, mu 0.029
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.489, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.469, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.480, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.6952s
+epoch 1, after OT fusion unlearning (4 clients) accuracy:  0.9874, total_num:10000
+epoch 1, erased data (4 clients) accuracy:  0.9975, total_num:1200
+
+Learned MIA results for before unlearning (4 clients):
+  MIA acc=0.5220, MIA AUC=0.5359
+
+Learned MIA results for after OT fusion unlearning (4 clients):
+  MIA acc=0.5215, MIA AUC=0.5393
+OTFU sweep result: num_unlearn_clients=4, chosen_ids=[3, 8, 4, 9], acc_after=0.9874, erased_acc=0.9975, mia_before_mia_acc=0.5220, mia_before_mia_auc=0.5359, mia_after_mia_acc=0.5215, mia_after_mia_auc=0.5393, running_time=0.6952s
+
+===== OTFU test: num_unlearn_clients=5 =====
+Chosen clients for unlearning: [3, 8, 4, 9, 2]
+300
+[0/10:  0] acc_back 1.000, loss1 0.002, KLD_mean 2.502, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.476, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.007, KLD_mean 2.482, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.474, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.471, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.008, KLD_mean 2.503, mu 0.030
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 -0.004, KLD_mean 2.427, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.475, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.492, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.000, KLD_mean 2.479, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.001, KLD_mean 2.476, mu 0.027
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.005, KLD_mean 2.453, mu 0.029
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.007, KLD_mean 2.478, mu 0.026
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.493, mu 0.024
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.010, KLD_mean 2.493, mu 0.023
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9933, total_num:300
+backdoor_acc_list []
+Round 1 parallel client time: 0.7061s
+epoch 1, after OT fusion unlearning (5 clients) accuracy:  0.9870, total_num:10000
+epoch 1, erased data (5 clients) accuracy:  0.9993, total_num:1500
+
+Learned MIA results for before unlearning (5 clients):
+  MIA acc=0.5445, MIA AUC=0.5628
+
+Learned MIA results for after OT fusion unlearning (5 clients):
+  MIA acc=0.5445, MIA AUC=0.5586
+OTFU sweep result: num_unlearn_clients=5, chosen_ids=[3, 8, 4, 9, 2], acc_after=0.9870, erased_acc=0.9993, mia_before_mia_acc=0.5445, mia_before_mia_auc=0.5628, mia_after_mia_acc=0.5445, mia_after_mia_auc=0.5586, running_time=0.7061s
+
+===== OTFU sweep summary (seed=4) =====
+clients=1, seed=4, acc_after=0.9848, erased_acc=0.9933, mia_before_mia_acc=0.5210, mia_before_mia_auc=0.5534, mia_after_mia_acc=0.5295, mia_after_mia_auc=0.5706, running_time=0.6765s
+clients=2, seed=4, acc_after=0.9859, erased_acc=0.9983, mia_before_mia_acc=0.5245, mia_before_mia_auc=0.5602, mia_after_mia_acc=0.5205, mia_after_mia_auc=0.5517, running_time=0.6851s
+clients=3, seed=4, acc_after=0.9871, erased_acc=0.9978, mia_before_mia_acc=0.5195, mia_before_mia_auc=0.5437, mia_after_mia_acc=0.5220, mia_after_mia_auc=0.5406, running_time=0.7012s
+clients=4, seed=4, acc_after=0.9874, erased_acc=0.9975, mia_before_mia_acc=0.5220, mia_before_mia_auc=0.5359, mia_after_mia_acc=0.5215, mia_after_mia_auc=0.5393, running_time=0.6952s
+clients=5, seed=4, acc_after=0.9870, erased_acc=0.9993, mia_before_mia_acc=0.5445, mia_before_mia_auc=0.5628, mia_after_mia_acc=0.5445, mia_after_mia_auc=0.5586, running_time=0.7061s
+
+===== OTFU multi-seed mean/std summary =====
+clients=1, num_seeds=5, acc_after=0.9847±0.0025, erased_acc=0.9893±0.0055, mia_after_attack_auc=0.5561±0.0154, mia_after_attack_train_acc=0.5271±0.0072, mia_after_erase_as_member_acc=0.6493±0.3171, mia_after_erase_member_prob=0.5005±0.0077, mia_after_erase_member_rate=0.6493±0.3171, mia_after_nonmember_member_prob=0.4869±0.0036, mia_after_num_attack_members=1000.0000±0.0000, mia_after_num_attack_nonmembers=1000.0000±0.0000, mia_after_num_erase=300.0000±0.0000, mia_after_retain_member_prob=0.5184±0.0040, mia_before_attack_auc=0.5549±0.0158, mia_before_attack_train_acc=0.5272±0.0055, mia_before_erase_as_member_acc=0.3800±0.2392, mia_before_erase_member_prob=0.5053±0.0033, mia_before_erase_member_rate=0.3800±0.2392, mia_before_nonmember_member_prob=0.4853±0.0013, mia_before_num_attack_members=1000.0000±0.0000, mia_before_num_attack_nonmembers=1000.0000±0.0000, mia_before_num_erase=300.0000±0.0000, mia_before_retain_member_prob=0.5152±0.0020, running_time=0.8217±0.2230
+clients=2, num_seeds=5, acc_after=0.9865±0.0005, erased_acc=0.9943±0.0035, mia_after_attack_auc=0.5415±0.0092, mia_after_attack_train_acc=0.5267±0.0069, mia_after_erase_as_member_acc=0.4107±0.3275, mia_after_erase_member_prob=0.5005±0.0047, mia_after_erase_member_rate=0.4107±0.3275, mia_after_nonmember_member_prob=0.4868±0.0019, mia_after_num_attack_members=1000.0000±0.0000, mia_after_num_attack_nonmembers=1000.0000±0.0000, mia_after_num_erase=600.0000±0.0000, mia_after_retain_member_prob=0.5114±0.0028, mia_before_attack_auc=0.5513±0.0105, mia_before_attack_train_acc=0.5265±0.0044, mia_before_erase_as_member_acc=0.6390±0.4274, mia_before_erase_member_prob=0.5037±0.0060, mia_before_erase_member_rate=0.6390±0.4274, mia_before_nonmember_member_prob=0.4860±0.0038, mia_before_num_attack_members=1000.0000±0.0000, mia_before_num_attack_nonmembers=1000.0000±0.0000, mia_before_num_erase=600.0000±0.0000, mia_before_retain_member_prob=0.5129±0.0040, running_time=0.6950±0.0304
+clients=3, num_seeds=5, acc_after=0.9865±0.0004, erased_acc=0.9969±0.0015, mia_after_attack_auc=0.5432±0.0068, mia_after_attack_train_acc=0.5290±0.0053, mia_after_erase_as_member_acc=0.8900±0.0655, mia_after_erase_member_prob=0.5019±0.0015, mia_after_erase_member_rate=0.8900±0.0655, mia_after_nonmember_member_prob=0.4868±0.0022, mia_after_num_attack_members=1000.0000±0.0000, mia_after_num_attack_nonmembers=1000.0000±0.0000, mia_after_num_erase=900.0000±0.0000, mia_after_retain_member_prob=0.5132±0.0028, mia_before_attack_auc=0.5406±0.0046, mia_before_attack_train_acc=0.5239±0.0042, mia_before_erase_as_member_acc=0.9436±0.0123, mia_before_erase_member_prob=0.5044±0.0015, mia_before_erase_member_rate=0.9436±0.0123, mia_before_nonmember_member_prob=0.4897±0.0034, mia_before_num_attack_members=1000.0000±0.0000, mia_before_num_attack_nonmembers=1000.0000±0.0000, mia_before_num_erase=900.0000±0.0000, mia_before_retain_member_prob=0.5140±0.0016, running_time=0.7184±0.0112
+clients=4, num_seeds=5, acc_after=0.9868±0.0005, erased_acc=0.9972±0.0013, mia_after_attack_auc=0.5454±0.0114, mia_after_attack_train_acc=0.5255±0.0068, mia_after_erase_as_member_acc=0.7448±0.2923, mia_after_erase_member_prob=0.5013±0.0028, mia_after_erase_member_rate=0.7448±0.2923, mia_after_nonmember_member_prob=0.4855±0.0018, mia_after_num_attack_members=1000.0000±0.0000, mia_after_num_attack_nonmembers=1000.0000±0.0000, mia_after_num_erase=1000.0000±0.0000, mia_after_retain_member_prob=0.5125±0.0028, mia_before_attack_auc=0.5483±0.0101, mia_before_attack_train_acc=0.5268±0.0107, mia_before_erase_as_member_acc=0.7292±0.2394, mia_before_erase_member_prob=0.5025±0.0032, mia_before_erase_member_rate=0.7292±0.2394, mia_before_nonmember_member_prob=0.4863±0.0040, mia_before_num_attack_members=1000.0000±0.0000, mia_before_num_attack_nonmembers=1000.0000±0.0000, mia_before_num_erase=1000.0000±0.0000, mia_before_retain_member_prob=0.5131±0.0029, running_time=0.7949±0.2161
+clients=5, num_seeds=5, acc_after=0.9869±0.0002, erased_acc=0.9984±0.0011, mia_after_attack_auc=0.5579±0.0101, mia_after_attack_train_acc=0.5365±0.0092, mia_after_erase_as_member_acc=0.4682±0.3440, mia_after_erase_member_prob=0.5004±0.0030, mia_after_erase_member_rate=0.4682±0.3440, mia_after_nonmember_member_prob=0.4863±0.0025, mia_after_num_attack_members=1000.0000±0.0000, mia_after_num_attack_nonmembers=1000.0000±0.0000, mia_after_num_erase=1000.0000±0.0000, mia_after_retain_member_prob=0.5141±0.0040, mia_before_attack_auc=0.5556±0.0092, mia_before_attack_train_acc=0.5359±0.0098, mia_before_erase_as_member_acc=0.4866±0.3607, mia_before_erase_member_prob=0.5019±0.0051, mia_before_erase_member_rate=0.4866±0.3607, mia_before_nonmember_member_prob=0.4848±0.0037, mia_before_num_attack_members=1000.0000±0.0000, mia_before_num_attack_nonmembers=1000.0000±0.0000, mia_before_num_erase=1000.0000±0.0000, mia_before_retain_member_prob=0.5144±0.0053, running_time=0.8475±0.2112
+
+Saved multi-seed records:
+  raw: /home/wwq/PerFU/PerFU/On_MNIST/otfu_multi_seed_raw.json
+  summary_json: /home/wwq/PerFU/PerFU/On_MNIST/otfu_multi_seed_summary.json
+  summary_csv: /home/wwq/PerFU/PerFU/On_MNIST/otfu_multi_seed_summary.csv

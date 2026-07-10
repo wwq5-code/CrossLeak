@@ -1,0 +1,85 @@
+dataset=MNIST
+cuda=False
+num_epochs=10
+explainer_type=ResNet_4x
+xpl_channels=1
+k=12
+beta=0.0001
+unlearning_ratio=0.1
+num_samples=4
+gpu=0
+device=cuda:0
+iid=True
+add_noise=False
+mse_rate=0.1
+lr=0.0001
+dimZ=512
+batch_size=100
+num_clients=10
+global_rounds=1
+local_epochs=1
+frac=1.0
+device cuda:0
+Loaded checkpoint from round: 40
+/home/wwq/PerFU/PerFU/On_MNIST/IB_FL_local_unlearn.py:258: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:78.)
+  eps = torch.cuda.FloatTensor(std.size()).normal_()
+epoch 40, loaded model accuracy:  0.9872, total_num:10000
+Chosen clients for unlearning: [2, 8, 4]
+300
+[0/10:  0] acc_back 0.990, loss1 -0.004, KLD_mean 2.491, mu 0.025
+0.9899999499320984
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.000, KLD_mean 2.517, mu 0.028
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.008, KLD_mean 2.550, mu 0.012
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.011, KLD_mean 2.478, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.001, KLD_mean 2.401, mu 0.031
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+[0/10:  0] acc_back 1.000, loss1 -0.003, KLD_mean 2.487, mu 0.040
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9067, total_num:300
+backdoor_acc_list []
+300
+[0/10:  0] acc_back 1.000, loss1 0.011, KLD_mean 2.468, mu 0.025
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9967, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.003, KLD_mean 2.485, mu 0.018
+1.0
+print x grad
+epoch 999, on erased data accuracy:  1.0000, total_num:300
+[0/10:  0] acc_back 1.000, loss1 0.004, KLD_mean 2.573, mu 0.021
+1.0
+print x grad
+epoch 999, on erased data accuracy:  0.9900, total_num:300
+backdoor_acc_list []
+epoch 0, after federated unlearning accuracy:  0.9838, total_num:10000
+Unlearning completed.
+unlearning with dp 17.861672401428223 seconds
+epoch 0, after federated unlearning accuracy:  0.9843, total_num:10000
+
+Client 2: erase=300 remain=5700
+First 10 erase indices: [20194, 45456, 16213, 26305, 52006, 3046, 16542, 12696, 4606, 30255]
+First 10 remain indices: [17772, 24205, 33605, 50448, 20297, 28565, 31638, 32826, 2649, 5680]
+
+Client 8: erase=300 remain=5700
+First 10 erase indices: [58693, 27448, 49322, 21925, 17464, 13617, 54982, 23135, 30103, 1526]
+First 10 remain indices: [13075, 47468, 4568, 8699, 52875, 17698, 27243, 26018, 33630, 28613]
+
+Client 4: erase=300 remain=5700
+First 10 erase indices: [17239, 7310, 31138, 13583, 16375, 41034, 19357, 13717, 7953, 21615]
+First 10 remain indices: [14198, 9882, 3267, 5408, 30185, 45619, 57132, 12169, 58051, 15474]

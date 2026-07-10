@@ -1,0 +1,29 @@
+
+
+
+
+
+\section{Related Work} \label{related_w}
+
+
+ 
+\subsection{Federated Unlearning}
+
+Federated Unlearning (FU) extends machine unlearning \citep{bourtoule2021machine, wang2023machine, nguyen2020variational} to FL, where the data to be forgotten are distributed across clients and their influence is embedded into the global model through iterative aggregation~\citep{ding2024strategic,liu2022right}. Existing FU studies can be broadly grouped into three lines. The first line focuses on efficient removal mechanisms that avoid full federated retraining, such as rapid retraining for realizing the right to be forgotten in FL~\citep{liu2022right}, class-discriminative pruning for class-level removal~\citep{wang2022federated}, and local client unlearning followed by limited additional FL rounds \citep{halimi2022federated}. The second line improves the practicality of FU under more constrained FL settings, including asynchronous federated unlearning and user-side influence approximation, which reduce the reliance on synchronous retraining or extensive participation from the remaining clients \citep{su2023asynchronous, wang2024fedu}. The third line considers the trustworthiness of the unlearning process itself, with VeriFi highlighting the need to verify whether the requested data influence has been faithfully removed \citep{gao2024verifi}. While these studies have advanced FU in terms of efficiency, system practicality, and verifiability, they mainly treat unlearning as a mechanism for privacy compliance, leaving the privacy risks introduced by the unlearning process itself less explored.
+
+
+
+ 
+
+\subsection{Privacy Leakage in Federated Unlearning}
+
+Although federated unlearning is designed to support data removal and privacy compliance, recent studies show that the unlearning process itself may create new privacy and security risks~\citep{zhou2026model}. A key observation is that the discrepancy between the original model and the unlearned model can expose information about the forgotten data, making unlearning-induced model variations a potential attack surface \citep{wang2023federated}. In centralized machine unlearning, unlearning inversion attacks have shown that an adversary may recover sensitive feature and label information from the gradients of unlearning operations \citep{hu2024learn}. 
+
+
+This concern also occurs in federated unlearning. Recent attacks have investigated whether forgotten information can be reconstructed or inferred in FU, including model inversion attacks that recover information about the unlearned data and label inference attacks that infer the labels of forgotten samples, clients, or classes from unlearning-induced parameter variations \citep{zhou2026model, wang2025label}. However, these federated unlearning targeted attacks highly relied on the unlearning gradients, which is not accessed in privacy-preserving federated learning with secure aggregation. Therefore, exploring the privacy leakage of federated unlearning under widely used FL privacy mechanisms, such as secure aggregation, is still an open problem.
+
+
+
+
+
+%Beyond direct privacy leakage, FU may also introduce new security vulnerabilities; for example, camouflaged poisoning attacks can remain hidden during training and only reveal harmful effects after specific unlearning requests are executed \citep{gao2025hidden}. Differentially private FU methods such as FedRecovery attempt to mitigate such risks by making the unlearned model statistically closer to a retrained model \citep{zhang2023fedrecovery}. 

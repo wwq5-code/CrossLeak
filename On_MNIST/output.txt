@@ -1,0 +1,70 @@
+/home/wwq/.conda/envs/py313wwq/lib/python3.13/site-packages/torch/cuda/__init__.py:180: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 12040). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at /pytorch/c10/cuda/CUDAFunctions.cpp:119.)
+  return torch._C._cuda_getDeviceCount() > 0
+dataset=MNIST
+cuda=False
+num_epochs=10
+explainer_type=ResNet_4x
+xpl_channels=1
+k=12
+beta=0.0001
+unlearning_ratio=0.1
+num_samples=4
+gpu=0
+device=cpu
+iid=True
+add_noise=False
+mse_rate=0.1
+lr=0.0001
+dimZ=512
+batch_size=100
+num_clients=10
+global_rounds=40
+local_epochs=1
+frac=1.0
+device cpu
+Federated learning starts
+epoch 1, global model (round 1) accuracy:  0.3136, total_num:10000
+epoch 2, global model (round 2) accuracy:  0.5669, total_num:10000
+epoch 3, global model (round 3) accuracy:  0.7882, total_num:10000
+epoch 4, global model (round 4) accuracy:  0.8766, total_num:10000
+epoch 5, global model (round 5) accuracy:  0.9258, total_num:10000
+epoch 6, global model (round 6) accuracy:  0.9481, total_num:10000
+epoch 7, global model (round 7) accuracy:  0.9608, total_num:10000
+epoch 8, global model (round 8) accuracy:  0.9686, total_num:10000
+epoch 9, global model (round 9) accuracy:  0.9716, total_num:10000
+epoch 10, global model (round 10) accuracy:  0.9747, total_num:10000
+epoch 11, global model (round 11) accuracy:  0.9762, total_num:10000
+epoch 12, global model (round 12) accuracy:  0.9784, total_num:10000
+epoch 13, global model (round 13) accuracy:  0.9794, total_num:10000
+epoch 14, global model (round 14) accuracy:  0.9797, total_num:10000
+epoch 15, global model (round 15) accuracy:  0.9808, total_num:10000
+epoch 16, global model (round 16) accuracy:  0.9818, total_num:10000
+epoch 17, global model (round 17) accuracy:  0.9832, total_num:10000
+epoch 18, global model (round 18) accuracy:  0.9833, total_num:10000
+epoch 19, global model (round 19) accuracy:  0.9839, total_num:10000
+epoch 20, global model (round 20) accuracy:  0.9837, total_num:10000
+epoch 21, global model (round 21) accuracy:  0.9847, total_num:10000
+epoch 22, global model (round 22) accuracy:  0.9851, total_num:10000
+epoch 23, global model (round 23) accuracy:  0.9868, total_num:10000
+epoch 24, global model (round 24) accuracy:  0.9850, total_num:10000
+epoch 25, global model (round 25) accuracy:  0.9852, total_num:10000
+epoch 26, global model (round 26) accuracy:  0.9851, total_num:10000
+epoch 27, global model (round 27) accuracy:  0.9862, total_num:10000
+epoch 28, global model (round 28) accuracy:  0.9859, total_num:10000
+epoch 29, global model (round 29) accuracy:  0.9866, total_num:10000
+epoch 30, global model (round 30) accuracy:  0.9866, total_num:10000
+epoch 31, global model (round 31) accuracy:  0.9866, total_num:10000
+epoch 32, global model (round 32) accuracy:  0.9870, total_num:10000
+epoch 33, global model (round 33) accuracy:  0.9864, total_num:10000
+epoch 34, global model (round 34) accuracy:  0.9865, total_num:10000
+epoch 35, global model (round 35) accuracy:  0.9870, total_num:10000
+epoch 36, global model (round 36) accuracy:  0.9870, total_num:10000
+epoch 37, global model (round 37) accuracy:  0.9863, total_num:10000
+epoch 38, global model (round 38) accuracy:  0.9872, total_num:10000
+epoch 39, global model (round 39) accuracy:  0.9870, total_num:10000
+epoch 40, global model (round 40) accuracy:  0.9872, total_num:10000
+Federated Training took 1193.9849691390991 seconds
+epoch 40, final global model accuracy:  0.9870, total_num:10000
+Saved to: global_vib_mnist_fedavg_test.pt
+Loaded checkpoint from round: 40
+epoch 40, loaded model accuracy:  0.9871, total_num:10000

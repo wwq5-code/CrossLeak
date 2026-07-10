@@ -1,0 +1,61 @@
+\section{Preliminary and Threat Model}
+\label{priliminary}
+
+
+\subsection{Federated Learning and Federated Unlearning}
+
+We consider a standard federated learning (FL) system~\citep{mcmahan2017communication,li2021sample} with a central server and $N$ clients. Each client $i$ holds a private local dataset $D_i$, and the global training set is $D=\bigcup_{i=1}^{N}D_i$. Instead of sending raw data to the server, clients train local models and the server aggregates them to obtain a global model. We denote the original global model trained before any deletion request as $f_{\theta_o} = \mathcal{A}_{\mathrm{FL}}(D),$ where $\mathcal{A}_{\mathrm{FL}}$ denotes the federated training algorithm and $\theta_o$ is the learned parameter.
+
+Federated unlearning aims to remove the influence of a deletion set $D_u\subset  D = \bigcup_{i=1}^{N}D_i $ from the trained global model. Let $D_r=D\setminus D_u$ be the retained training data. Ideally, the unlearned model should behave like a model trained only on $D_r$: $f_{\theta_u} \approx \mathcal{A}_{\mathrm{FL}}(D_r).$ Exact federated retraining obtains $f_{\theta_u}$ by retraining on $D_r$, while approximate federated unlearning methods update $f_{\theta_o}$ more efficiently to suppress the influence of $D_u$. In this paper, $D_u$ may correspond to samples from one or more target labels, samples containing sensitive visual features, or backdoored samples with a trigger pattern.
+
+
+
+\subsection{Threat Model under Secure Aggregation}
+
+In privacy-preserving FL, secure aggregation hides individual client updates from the server and only reveals aggregated model information~\citep{so2023securing, bonawitz2017practical,guan2025input}. Thus, during training and unlearning, the server does not observe a client-specific gradient $\nabla \ell(D_i;\theta)$ and a local model update. This changes the privacy attack surface in federated unlearning.
+
+
+
+To make the threat model convenient to understand, we assume that the FL server is an honest-but-curious attacker in a secure-aggregation federated unlearning system~\citep{kairouz2021advances}. The attacker follows the protocol and does not tamper with training or unlearning, but tries to infer private information from the released aggregated models before and after unlearning. The key restriction is that the client-level signals, including local updates and gradients, remain hidden by secure aggregation~\citep{bonawitz2017practical}.
+
+
+
+
+\noindent
+\textbf{Attacker's capabilities.}
+The attacker can access the released original model $f_{\theta_o}$ and the released unlearned model $f_{\theta_u}$ after secure aggregation. The attacker has a public probe set $D_p=\{x_j\}_{j=1}^{n},$ drawn from the same input domain. The probe set is disjoint from $D_u$ and $D$. Probe labels may be available, but they are not required: if labels are unavailable, the attacker can use $f_{\theta_o}$ to assign pseudo-labels to probe samples. The attacker can query and inspect both $f_{\theta_o}$ and $f_{\theta_u}$ on the same probe samples. Thus, the attacker can obtain output probabilities, logits, and representations. 
+
+\noindent
+\textbf{Attacker's restrictions.}
+Under the strict secure aggregation, the attacker cannot access raw client data, deleted samples, client gradients, and individual local updates. The attacker also does not know the deletion-request metadata, including which client requested unlearning, which sample indices were deleted, which labels were involved, or how many labels were deleted. Since the FL server is honest-but-curios, it will not poison training or alter the unlearning algorithm to assist unlearning privacy inference.
+
+% \noindent
+% \textbf{Attack goal and non-goal.}
+% The attack goal is to infer sensitive information about the unlearning request from the model pair $(M_o,M_u)$. We focus on two kinds of leakage: the deleted label set $Y_u$ and the deletion-sensitive feature set $F_u$. The goal is not to exactly reconstruct every deleted training sample, nor to break the cryptographic guarantee of secure aggregation. Instead, we ask whether the aggregated before-after model difference itself leaks private information after secure aggregation has hidden client-level updates.
+
+
+\subsection{Attacking Goals of Unlearning-Induced Leakage}
+
+Secure aggregation hides client-level training signals, but the attacker can still observe the before-after aggregated model pair $(f_{\theta_o}, f_{\theta_u})$. We ask whether their difference leaks sensitive information about the deleted data $D_u$:
+\begin{equation}
+    \mathcal{I}(D_u) \leftarrow \mathcal{T}(f_{\theta_o},f_{\theta_u},D_p),
+    \label{eq:paired_model_inference}
+\end{equation}
+where $\mathcal{T}$ is an attack algorithm and $\mathcal{I}(D_u)$ denotes private information about the unlearning request.
+
+
+
+We focus on two types of private information that are actionable in federated unlearning.
+
+\begin{problem}[Deleted-Label Leakage]
+Given the original model $f_{\theta_o}$, the unlearned model $f_{\theta_u}$, a public probe set $D_p$, and the label space $\mathcal{Y}$, the attacker aims to infer the deleted label set $Y_u\subseteq \mathcal{Y}$ associated with the unlearning request. The output is a ranked label list $\hat{Y}_u$.
+\end{problem}
+
+\begin{problem}[Deletion-Sensitive Feature Leakage]
+Given $f_{\theta_o}$, $f_{\theta_u}$, and a probe set $D_p$, the attack goal is to infer sensitive latent or semantic features that were supported by the deleted data $D_u$ and weakened after unlearning. The attacker outputs a ranked feature set $\hat{F}_u$ that captures deletion-sensitive representation directions, and, when possible, a set of human-interpretable concepts $\hat{C}_u$ describing these features. The attack is successful when the recovered features and concepts are strongly associated with the deleted data $D_u$.
+\end{problem}
+
+ 
+
+The attacker is successful if $\hat{Y}_u$ overlaps with the true deleted label set $Y_u$, or if $\hat{F}_u$ captures the key features that are active before unlearning and suppressed or shifted after unlearning. This formulation captures a stricter setting than prior unlearning inversion attacks that require gradients and simulated deleted samples: the only private signal available to the attacker is the two secure aggregated models.
+

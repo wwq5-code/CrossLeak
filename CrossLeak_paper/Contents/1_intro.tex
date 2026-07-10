@@ -1,0 +1,64 @@
+\section{Introduction} \label{intro}
+
+
+Federated Unlearning is an emerging research branch in machine unlearning to uphold the right to be forgotten. Federated Learning (FL) protects users' private data by keeping raw training data on local clients while only exchanging model updates or aggregated parameters with a central server~\citep{li2020federated,salehi2022flash,zhang2021dual}. 
+When a client later requests deletion, the system must remove the influence of the corresponding data from the trained global models~\citep{wang2022federated,liu2022right}. Since retraining from scratch is computationally expensive, recent federated unlearning methods therefore aim to efficiently update the global model so that the unlearned model behaves as if the deleted data had never participated in training~\citep{wang2024fedu,liu2022right}. 
+
+
+
+% Existing attacks show that unlearning itself can leak information about the data being removed~\citep{chen2021machine}.
+
+There are few studies that have noticed the privacy leakage issues in machine unlearning and federated unlearning. For example, model inversion style attacks attempt to reconstruct or characterize deleted samples~\citep{hu2024learn}, while label inference attacks try to infer which class labels were involved in the unlearning request~\citep{wang2025label}. These studies reveal an important tension: unlearning is designed to protect users by removing their influence, yet the act of removal may introduce a distinguishable model change that exposes what was removed~\citep{chen2021machine, hu2024learn, wang2025label, zhou2026model}.
+
+\noindent
+\textbf{Research Gap.}
+However, these unlearning privacy inversion methods highly rely on the sample-level unlearning gradients or intermediate updates. These information are hard to access in privacy-preserving federated unlearning with secure aggregation~\citep{so2023securing}. Secure aggregation~\citep{so2023securing, bonawitz2017practical,guan2025input} is a common privacy-preserving technique in FL to ensure that the FL server can only obtain the aggregated global model instead of individual local models and gradients. Under this deployment, a curious or malicious FL server may not observe client updates and gradients of the unlearned samples. The remaining attack surface is much more restricted: the FL server attacker can only compare the aggregated model before unlearning and the aggregated model after unlearning. It remains unclear whether such limited access is sufficient to infer sensitive information about the unlearning request.
+
+
+\noindent
+\textbf{Research Question.}
+Given this state of the art, we pose the following research question: \textit{\ul{``Given only access of the secure aggregated original and unlearned models, to what extent do current federated unlearning methods leak the sensitive information of unlearned data?''}}
+
+
+\noindent
+\textbf{Inspiration.}
+The key challenge is that secure aggregation limits the most direct attack signals: the adversary cannot observe client-level updates or sample-level gradients. Although the two aggregated models are available, all the updating and unlearning information is aggregated, making the deleted privacy inference significantly difficult. Inspired by CrossCoder~\citep{kassem2026delta,pach2026sparse,minder2026overcoming}, which provides a tool for analyzing paired model representations, we investigate whether unlearning privacy leakage can be inferred from the representation-space difference between the original model and the unlearned model.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.997\linewidth]{../../../../../绘图/2026/INFOCOM27/Figure_1}
+	\caption{Privacy leakage in secure-aggregation federated unlearning. Even when client-level updates and gradients are hidden, the aggregated original and unlearned models can still reveal information about the deleted labels and deletion-sensitive features.}
+	\label{fig:figure1}
+\end{figure}
+
+ 
+ 
+ 
+\noindent
+\textbf{Our Work.} To answer the research question, we propose the CrossLeak attack to identify unlearning data leakage in privacy-preserving federated unlearning with secure aggregation, as depicted in \Cref{fig:figure1}. CrossLeak is a post-unlearning attack that only requires access to the aggregated original model, the aggregated unlearned model, and a public probe set. It queries both models on the same probe samples, extracts paired representations and logits, and trains a sparse CrossCoder to identify features that are active before unlearning but suppressed or shifted after unlearning. CrossLeak then uses these features, together with representation displacement and confidence degradation, to infer both deleted labels and deletion-sensitive visual concepts.
+
+
+\noindent
+\textbf{Feature Leakage.}
+CrossLeak first studies leakage at the feature level. The key observation is that unlearning does not only affect final predictions; it also changes internal representation geometry. Features that are strongly supported by the deleted data may have high before-exclusive strength, large before-after decoder discrepancy, and high coverage on probe samples associated with the inferred deleted labels. By ranking these features, CrossLeak can recover deletion-sensitive latent evidence. For image tasks, CrossLeak further maps top-activating probe samples to semantic concepts with CLIP, which allows the attacker to infer visual attributes, object parts, or trigger-like patterns related to the unlearning request.
+
+
+\noindent
+\textbf{Label Leakage.}
+CrossLeak also studies leakage at the label level. Deleted labels can leave several complementary traces: the corresponding class representations may move after unlearning, and the original model's confidence on the deleted classes may drop. Thus, by observing the representations and prediction difference of the probe set, the attacker can infer the label of the unlearned data.
+
+
+We conduct comprehensive experiments on three representative datasets across three representative federated retraining methods. We also compared our CrossLeak with existing state-of-the-art unlearning privacy inversion methods on federated unlearning \citep{hu2024learn,wang2025label}, where these attacks all need the unlearning gradients. The results demonstrate that CrossLeak can infer the private information (including the deleted labels and sensitive features) under the strict constraints after secure aggregation, without accessing the individual model and unlearning gradients.
+ 
+
+
+Our contributions are summarized as follows.
+\begin{itemize}[itemsep=0pt, parsep=0pt, leftmargin=*]
+	\item We introduce a new privacy leakage problem in secure-aggregation federated unlearning: inferring deleted labels and deletion-sensitive features using only the original and unlearned aggregated models, without client gradients and access to unlearned samples.
+	\item We propose CrossLeak, a CrossCoder-based attack that decomposes paired pre- and post-unlearning representations into shared and unlearning-sensitive features, and uses these features to perform label inference, sensitive feature inference, and semantic concept recovery.
+	\item We conduct extensive experiments on representative datasets and federated unlearning methods. The results show that even after secure aggregation, CrossLeak can still  infer deleted labels and deletion-sensitive features of current federated unlearning.
+\end{itemize}
+
+
+ 

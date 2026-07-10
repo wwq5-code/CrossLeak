@@ -1,0 +1,663 @@
+可以，而且这个攻击方法会比较有新意。它的核心不是从 **individual unlearning update** 恢复数据，因为 SA 已经把 individual update 隐藏了；而是从 **SA 聚合后的 unlearning-induced model difference** 中恢复 deleted-data fingerprint。
+
+可以命名为：
+
+> **SA-CrossLeak: CrossCoder-based Deleted-Data Inference under Secure Aggregation**
+
+或者：
+
+> **CrossFU-Leak: Inferring Forgotten Data from CrossCoder Model Diffing in Secure Federated Unlearning**
+
+---
+
+## 1. 核心 intuition
+
+SA 的目标是让 server 只能看到 aggregate update，而不能看到每个 client 的 individual update。经典 SecAgg 的设计目标就是让 server 计算多个用户向量之和，但不学习每个用户的 individual contribution。([arXiv][1])
+
+但是 federated unlearning 会带来一个特殊问题：
+
+[
+M_{before} \rightarrow M_{after}
+]
+
+这个变化不是普通训练变化，而是**为了移除某些数据影响而产生的定向变化**。即使 SA 隐藏了单个 client 的 unlearning update，server 仍然能看到 unlearning 前后的 global model：
+
+[
+\theta_{before}, \theta_{after}
+]
+
+或者看到聚合后的 correction：
+
+[
+\Delta^{SA}_{unlearn}
+=====================
+
+\theta_{after}-\theta_{before}
+]
+
+已有研究已经指出，SA 并不等于完整隐私保护；在 membership inference 场景下，SecAgg 仍可能提供较弱隐私，尤其是在高维 update 中。([arXiv][1]) 另外，federated unlearning 本身也被证明可能产生隐私泄漏，例如 FUIA 研究 unlearning 前后模型差异导致 forgotten data 的 model inversion 风险。([arXiv][2])
+
+你的新点可以是：
+
+> **用 CrossCoder 对 (M_{before}) 和 (M_{after}) 做 model diffing，自动抽取 unlearning 后消失、减弱、迁移或补偿的 sparse features，然后利用这些 features 推断 deleted membership / label / semantic neighbor。**
+
+CrossCoder 正适合这个问题，因为它被用于比较两个模型的 activation space，并通过一次 SAE-style 训练隔离模型内部差异。([Transformer Circuits][3])
+
+---
+
+## 2. Threat model
+
+可以设定一个 **honest-but-curious server** 或 **external auditor**。
+
+攻击者知道：
+
+[
+M_{before}, M_{after}
+]
+
+也就是 federated unlearning 前后的 global model。
+
+攻击者不知道：
+
+[
+\Delta_i^{unlearn}
+]
+
+因为 individual update 被 SA 隐藏。
+
+攻击者可能拥有：
+
+* 一个 candidate set：
+
+[
+D_c = {x_1, x_2, ..., x_n}
+]
+
+* 一些 public / shadow data；
+* 模型结构；
+* unlearning protocol 的大致信息；
+* 但不知道真正 forget set：
+
+[
+D_f
+]
+
+攻击目标可以有三个层次：
+
+### 目标 A：deleted membership inference
+
+判断 candidate sample 是否被删除：
+
+[
+x \in D_f ?
+]
+
+### 目标 B：deleted label inference
+
+判断被删除数据属于哪个类别：
+
+[
+y_f = ?
+]
+
+### 目标 C：deleted semantic-neighbor inference
+
+判断哪些 retain samples 与 deleted samples 语义最接近：
+
+[
+x_r \in \mathcal{N}(D_f)?
+]
+
+第三个目标很适合你的 **NeighborLeak / deletion fingerprint** 思路。
+
+---
+
+## 3. 攻击方法整体流程
+
+### Step 1：收集 original / unlearned model 的 paired activations
+
+选一个 probe set：
+
+[
+D_p = D_c \cup D_{pub} \cup D_{neighbor}
+]
+
+把同一批输入分别送入 unlearning 前后的模型：
+
+[
+h_b^l(x) = M_{before}^l(x)
+]
+
+[
+h_a^l(x) = M_{after}^l(x)
+]
+
+其中 (l) 可以是 ResNet18 的 layer3、layer4、avgpool，或者 LLM 的某个 residual stream layer。
+
+对于 ResNet18，建议先用：
+
+[
+h^l(x) \in \mathbb{R}^{C}
+]
+
+也就是对 convolutional feature map 做 global average pooling。这样更稳定。
+
+---
+
+### Step 2：训练 CrossCoder 做 model diffing
+
+训练一个 CrossCoder：
+
+[
+(h_b^l(x), h_a^l(x)) \rightarrow z(x) \rightarrow (\hat{h}_b^l(x), \hat{h}_a^l(x))
+]
+
+目标函数：
+
+[
+\mathcal{L}_{CC}
+================
+
+|h_b^l(x)-\hat{h}_b^l(x)|_2^2
++
+|h_a^l(x)-\hat{h}_a^l(x)|_2^2
++
+\lambda |z(x)|_1
+]
+
+这里 (z(x)) 是 sparse latent features。
+
+每个 latent feature (z_j) 有两个 decoder directions：
+
+[
+d_{b,j}, d_{a,j}
+]
+
+分别负责重构 before-model 和 after-model 的 activation。
+
+---
+
+### Step 3：识别 unlearning-sensitive features
+
+对每个 CrossCoder latent feature (j)，计算它在 before / after 模型中的相对强度。
+
+可以用 decoder norm ratio：
+
+[
+\rho_j
+======
+
+\frac{|d_{b,j}|}
+{|d_{b,j}|+|d_{a,j}|}
+]
+
+如果：
+
+[
+\rho_j \approx 1
+]
+
+说明这个 feature 更偏向 before-model，可能是 unlearning 后消失或减弱的 feature。
+
+如果：
+
+[
+\rho_j \approx 0
+]
+
+说明这个 feature 更偏向 after-model，可能是 unlearning 后产生的 compensation feature。
+
+如果：
+
+[
+\rho_j \approx 0.5
+]
+
+说明它是 shared feature。
+
+CrossCoder model diffing 里也常用类似的 model-exclusive / shared feature 分析思想，用来隔离两个模型之间的内部差异。([Transformer Circuits][3])
+
+---
+
+## 4. 关键攻击分数：Deletion Shift Score
+
+对每个 candidate sample (x)，计算 CrossCoder feature shift：
+
+[
+s(x)
+====
+
+\sum_{j \in \mathcal{F}*{del}}
+w_j
+\cdot
+|z*{b,j}(x)-z_{a,j}(x)|
+]
+
+其中：
+
+* (\mathcal{F}_{del})：unlearning-sensitive features；
+* (z_{b,j}(x))：before model 中 feature (j) 的激活；
+* (z_{a,j}(x))：after model 中 feature (j) 的激活；
+* (w_j)：feature 权重，可以由 decoder norm difference 或 forget-likelihood 估计。
+
+直觉是：
+
+> 如果某个 candidate sample 是 deleted sample，那么它在 original model 中激活的某些 sparse features，会在 unlearned model 中显著消失、减弱或迁移。
+
+所以：
+
+[
+s(x) \uparrow \Rightarrow x \text{ more likely deleted}
+]
+
+这就是 CrossCoder-based membership inference。
+
+---
+
+## 5. 可以再加一个 Neighbor Shift Score
+
+你前面一直在想 deletion fingerprint / neighbor leak，这里可以自然结合。
+
+对每个 candidate (x)，找它在 before model 表征空间里的邻居：
+
+[
+\mathcal{N}_k(x)
+]
+
+然后计算邻居的 CrossCoder shift coherence：
+
+[
+s_{nei}(x)
+==========
+
+\frac{1}{k}
+\sum_{x' \in \mathcal{N}_k(x)}
+\cos
+\left(
+\Delta z(x),
+\Delta z(x')
+\right)
+]
+
+其中：
+
+[
+\Delta z(x)=z_b(x)-z_a(x)
+]
+
+如果 (x) 是 deleted sample，它附近的 semantic neighbors 可能也会出现一致的 representation shift。于是可以定义最终攻击分数：
+
+[
+S(x)
+====
+
+\alpha s(x)
++
+\beta s_{nei}(x)
++
+\gamma s_{logit}(x)
+]
+
+其中：
+
+[
+s_{logit}(x)
+============
+
+|f_{before}(x)-f_{after}(x)|
+]
+
+这样你就把普通 pre/post model difference attack 升级成：
+
+> **CrossCoder feature-level deletion fingerprint attack**
+
+这比只用 loss / confidence 更有解释性。
+
+---
+
+## 6. Label inference 怎么做？
+
+如果攻击目标是推断 deleted label，可以统计每个 class 的 CrossCoder shift：
+
+[
+S_c
+===
+
+\frac{1}{|D_c|}
+\sum_{x \in D_c, y=c}
+S(x)
+]
+
+预测：
+
+[
+\hat{y}_f = \arg\max_c S_c
+]
+
+直觉是，如果某个 class 被 unlearned，那个 class 的 samples 会整体出现更明显的 internal feature shift。
+
+这可以和已有 FU label leakage 工作区分开：ULIA 主要强调 federated unlearning 引起的参数变化可暴露 unlearning data label；你的方法强调 **SA 下 individual update 不可见时，仍可通过 CrossCoder model diffing 从 internal representation shift 中恢复 label signal**。([arXiv][2])
+
+---
+
+## 7. 为什么这个攻击能绕过 SA？
+
+因为它不需要 individual update。
+
+SA 保护的是：
+
+[
+\Delta_i
+]
+
+不被 server 单独看到。
+
+但你的攻击输入是：
+
+[
+M_{before}, M_{after}
+]
+
+或者：
+
+[
+\Delta^{SA}_{unlearn}
+]
+
+也就是 aggregation 后的全局结果。
+
+攻击逻辑是：
+
+[
+\text{SA hides individual updates}
+\neq
+\text{SA removes deletion-specific representation shifts}
+]
+
+如果 unlearning 确实改变了模型内部与 deleted data 相关的特征，那么这个变化会进入 global model：
+
+[
+h_{before}(x)-h_{after}(x)
+]
+
+CrossCoder 的作用就是把这种变化从复杂 activation space 里分解出来。
+
+所以你可以在论文里写：
+
+> Secure aggregation hides the source of the unlearning update, but not necessarily the semantic direction of forgetting encoded in the aggregated model change.
+
+这句话很关键。
+
+---
+
+## 8. 攻击算法可以这样写
+
+**Algorithm: SA-CrossLeak**
+
+**Input:**
+Before-unlearning model (M_b), after-unlearning model (M_a), probe set (D_p), candidate set (D_c), selected layer (l).
+
+**Output:**
+Deletion score (S(x)) for each candidate (x).
+
+1. For each (x \in D_p), collect paired activations:
+
+[
+(h_b^l(x), h_a^l(x))
+]
+
+2. Train CrossCoder:
+
+[
+(h_b^l, h_a^l) \rightarrow z \rightarrow (\hat{h}_b^l, \hat{h}_a^l)
+]
+
+3. Identify unlearning-sensitive latents:
+
+[
+\mathcal{F}_{del}
+=================
+
+{j: |\rho_j-0.5|>\tau}
+]
+
+4. For each candidate (x), compute latent shift:
+
+[
+s(x)
+====
+
+\sum_{j\in \mathcal{F}*{del}}
+w_j |z*{b,j}(x)-z_{a,j}(x)|
+]
+
+5. Compute neighbor coherence:
+
+[
+s_{nei}(x)
+==========
+
+\frac{1}{k}
+\sum_{x'\in \mathcal{N}_k(x)}
+\cos(\Delta z(x), \Delta z(x'))
+]
+
+6. Output:
+
+[
+S(x)=\alpha s(x)+\beta s_{nei}(x)+\gamma s_{logit}(x)
+]
+
+7. Rank candidates by (S(x)). Higher score means more likely deleted.
+
+---
+
+## 9. 实验设计
+
+### Datasets
+
+可以先用：
+
+* CIFAR-10；
+* CIFAR-100；
+* TinyImageNet；
+* CelebA。
+
+### Models
+
+* ResNet18；
+* VGG / MobileNet 做补充；
+* 如果做 FedPEFT，可用 ViT/CLIP + adapter/LoRA。
+
+### FL setting
+
+* FedAvg；
+* Non-IID Dirichlet：
+
+[
+\alpha = 0.1, 0.3, 1.0
+]
+
+* Secure Aggregation simulated by only exposing aggregate updates / before-after global models。
+
+### FU methods
+
+可以测试：
+
+* retrain；
+* FedEraser-like；
+* gradient ascent unlearning；
+* fine-tuning based unlearning；
+* FedAU / approximate FU；
+* class-level / client-level / sample-level unlearning。
+
+### Attack baselines
+
+你需要和这些比较：
+
+1. confidence difference；
+2. loss difference；
+3. logit shift；
+4. gradient inner product；
+5. representation distance；
+6. CKA/SVCCA shift；
+7. FUIA-like inversion；
+8. ULIA-like label inference；
+9. your CrossCoder feature shift。
+
+CrossCoder attack 的优势应该是：
+
+> 在普通 output-level shift 不明显时，internal sparse feature shift 仍然可见。
+
+---
+
+## 10. 最重要的 ablation
+
+### Ablation 1：SA cohort size
+
+测试：
+
+[
+m=1,2,5,10,20,50
+]
+
+如果 CrossCoder attack 在 (m=10) 或 (m=20) 仍然有效，就说明不是 trivial single-client leakage。
+
+---
+
+### Ablation 2：cover clients
+
+让 retain clients 同时上传 normal update：
+
+[
+\Delta^{SA}
+===========
+
+\Delta^{unlearn}*u
++
+\sum*{r\in R}\Delta^{cover}_r
+]
+
+看 cover update 是否能淹没 CrossCoder shift。
+
+---
+
+### Ablation 3：Non-IID degree
+
+Non-IID 越强，client contribution 越有个体特征。预期：
+
+[
+\alpha \downarrow \Rightarrow attack \uparrow
+]
+
+---
+
+### Ablation 4：forget size
+
+测试：
+
+[
+|D_f| = 1, 10, 100, class-level
+]
+
+通常 forget set 越大，feature shift 越强。
+
+---
+
+### Ablation 5：layer choice
+
+对 ResNet18：
+
+* layer1：低级纹理；
+* layer2：局部 shape；
+* layer3：语义部件；
+* layer4：高级类别；
+* avgpool：全局语义。
+
+我预计 layer3/layer4 最容易看到 deletion-specific shifted features。
+
+---
+
+## 11. 这篇文章的 novelty 怎么写？
+
+可以写成三点。
+
+### Contribution 1
+
+提出一个新的隐私风险：
+
+> Secure aggregation hides individual unlearning updates, but does not eliminate deleted-data fingerprints in the aggregated model difference.
+
+### Contribution 2
+
+提出 CrossCoder-based attack：
+
+> We train a CrossCoder on paired activations of the pre-unlearning and post-unlearning global models to discover sparse deletion-sensitive features.
+
+### Contribution 3
+
+提出 deletion feature shift / neighbor coherence：
+
+> We show that deleted samples induce coherent sparse feature shifts that enable membership, label, and semantic-neighbor inference even under SA.
+
+---
+
+## 12. 推荐标题
+
+我觉得最好的标题是：
+
+> **SA-CrossLeak: CrossCoder-Based Deleted Data Inference in Secure Federated Unlearning**
+
+或者更强一点：
+
+> **Secure Aggregation Does Not Hide Forgetting: CrossCoder-Based Privacy Attacks on Federated Unlearning**
+
+第二个更吸引人，但第一更学术稳定。
+
+---
+
+## 13. 这个方法最大的风险
+
+### 风险 1：CrossCoder 在 ResNet18 上是否稳定？
+
+CrossCoder 主要是在 LLM model diffing 里被大量讨论；Anthropic 也提醒 CrossCoder model diffing 仍属于 developing work，而不是非常成熟的结论。([Anthropic][4])
+
+所以你最好先用 CKA / representation distance 做 sanity check，然后再用 CrossCoder 做细粒度分析。
+
+### 风险 2：Reviewer 会问为什么不用普通 representation shift
+
+所以你要证明：
+
+[
+CrossCoder > raw representation distance
+]
+
+尤其是在：
+
+* output shift 很小；
+* unlearning method 保持 utility 很好；
+* SA cohort 有 cover updates；
+* Non-IID setting。
+
+### 风险 3：CrossCoder feature 可解释性
+
+你需要展示 top-activating images / patches。否则 reviewer 会说只是 latent score，不是真正 interpretable feature。
+
+---
+
+## 14. 最推荐的 paper framing
+
+你可以这样定位：
+
+> Existing attacks on federated unlearning mainly exploit observable parameter or gradient differences. However, under secure aggregation, individual unlearning updates are hidden, making it unclear whether deleted-data privacy is protected. We show that secure aggregation does not remove the internal representation-level forgetting signal. By applying CrossCoder-based model diffing to the global model before and after unlearning, we extract sparse deletion-sensitive features and infer forgotten samples, labels, and semantic neighbors.
+
+这就是一个很完整的 attack paper。
+
+一句话总结：
+
+> **可以设计。核心攻击是：SA 隐藏 individual update，但 global model 的 before/after activation shift 仍然保留 deleted-data fingerprint；CrossCoder 可以把这种 fingerprint 分解成 sparse deletion-sensitive features，从而做 membership / label / neighbor inference。**
+
+[1]: https://arxiv.org/abs/2403.17775?utm_source=chatgpt.com "Secure Aggregation is Not Private Against Membership Inference Attacks"
+[2]: https://arxiv.org/html/2502.14558v1?utm_source=chatgpt.com "FUIA: Model Inversion Attack against Federated Unlearning"
+[3]: https://transformer-circuits.pub/2025/crosscoder-diffing-update/index.html?utm_source=chatgpt.com "Insights on Crosscoder Model Diffing"
+[4]: https://www.anthropic.com/research/crosscoder-model-diffing?utm_source=chatgpt.com "Insights on Crosscoder Model Diffing"

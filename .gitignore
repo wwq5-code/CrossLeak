@@ -1,0 +1,46 @@
+# macOS
+.DS_Store
+
+# IDE/editor settings
+.idea/
+.vscode/
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Model checkpoints and large training artifacts
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+
+# Experiment/runtime outputs
+*.log
+*.tmp
+*.npy
+*.npz
+
+# Matplotlib cache
+.mplconfig/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.out
+*.synctex.gz
+*.toc
+

@@ -4,6 +4,9 @@
 # IDE/editor settings
 .idea/
 .vscode/
+*.gitignore
+/CrossLeak_paper/
+
 
 # Python cache and local environments
 __pycache__/

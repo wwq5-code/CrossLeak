@@ -7,7 +7,6 @@ import argparse
 import copy
 import os
 import random
-import time
 
 import numpy as np
 import torch
@@ -23,7 +22,6 @@ def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", choices=["CIFAR10"], default="CIFAR10")
     parser.add_argument("--num_epochs", type=int, default=10)
-    parser.add_argument("--beta", type=float, default=0.0001)
     parser.add_argument("--unlearning_ratio", type=float, default=0.05)
     parser.add_argument("--mia_max_samples", type=int, default=1000)
     parser.add_argument("--mia_attack_epochs", type=int, default=200)
@@ -32,122 +30,79 @@ def args_parser():
     return parser.parse_args()
 
 
-class LinearModel(nn.Module):
-    def __init__(self, n_feature=192, h_dim=3 * 32, n_output=10):
+def make_vgg16_bn_features():
+    """VGG-16-BN feature extractor adapted to 32x32 CIFAR inputs."""
+    configuration = [
+        64, 64, "M",
+        128, 128, "M",
+        256, 256, 256, "M",
+        512, 512, 512, "M",
+        512, 512, 512, "M",
+    ]
+    layers = []
+    in_channels = 3
+    for value in configuration:
+        if value == "M":
+            layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
+            continue
+        layers.extend([
+            nn.Conv2d(in_channels, value, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(value),
+            nn.ReLU(inplace=True),
+        ])
+        in_channels = value
+    return nn.Sequential(*layers)
+
+
+class CIFARVGG16BN(nn.Module):
+    """VGG-16-BN with a CIFAR-sized pooling and classification head."""
+
+    representation_dim = 512
+
+    def __init__(self, num_classes=10):
         super().__init__()
-        self.fc1 = nn.Linear(n_feature, h_dim)
-        self.fc2 = nn.Linear(h_dim, n_output)
+        self.features = make_vgg16_bn_features()
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.classifier = nn.Linear(self.representation_dim, num_classes)
+        self._initialize_weights()
+
+    def _initialize_weights(self):
+        for module in self.modules():
+            if isinstance(module, nn.Conv2d):
+                nn.init.kaiming_normal_(module.weight, mode="fan_out", nonlinearity="relu")
+            elif isinstance(module, nn.BatchNorm2d):
+                nn.init.ones_(module.weight)
+                nn.init.zeros_(module.bias)
+            elif isinstance(module, nn.Linear):
+                nn.init.normal_(module.weight, 0, 0.01)
+                nn.init.zeros_(module.bias)
+
+    def extract_representation(self, x):
+        features = self.features(x)
+        return torch.flatten(self.avgpool(features), 1)
+
+    def forward_with_features(self, x):
+        representation = self.extract_representation(x)
+        return representation, self.classifier(representation)
 
     def forward(self, x):
-        return self.fc2(F.relu(self.fc1(x)))
+        _, logits = self.forward_with_features(x)
+        return logits
 
 
-def conv_block(in_channels, out_channels, stride=1):
-    return nn.Sequential(
-        nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False),
-        nn.BatchNorm2d(out_channels),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(out_channels, out_channels, kernel_size=1, stride=1, bias=False),
-        nn.BatchNorm2d(out_channels),
-    )
-
-
-class ResBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, stride=None):
-        super().__init__()
-        stride = stride or (1 if in_channels >= out_channels else 2)
-        self.block = conv_block(in_channels, out_channels, stride)
-        if stride == 1 and in_channels == out_channels:
-            self.skip = nn.Identity()
-        else:
-            self.skip = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(out_channels),
-            )
-
-    def forward(self, x):
-        return F.relu(self.block(x) + self.skip(x))
-
-
-class ResNet(nn.Module):
-    def __init__(self, in_channels, block_features, num_classes=10):
-        super().__init__()
-        block_features = [block_features[0]] + block_features
-        self.expand = nn.Sequential(
-            nn.Conv2d(in_channels, block_features[0], kernel_size=1, stride=1, bias=False),
-            nn.BatchNorm2d(block_features[0]),
-        )
-        self.res_blocks = nn.ModuleList(
-            [ResBlock(block_features[i], block_features[i + 1]) for i in range(len(block_features) - 1)]
-        )
-        self.linear_head = nn.Linear(block_features[-1], num_classes)
-
-    def forward(self, x):
-        x = self.expand(x)
-        for res_block in self.res_blocks:
-            x = res_block(x)
-        x = F.avg_pool2d(x, x.shape[-1])
-        return self.linear_head(x.reshape(x.shape[0], -1))
-
-
-def resnet18(in_channels, num_classes):
-    block_features = [64] * 2 + [128] * 2 + [256] * 2 + [512] * 2
-    return ResNet(in_channels, block_features, num_classes)
-
-
-class VIB(nn.Module):
-    def __init__(self, encoder, approximator, decoder, reconstruction_dim):
-        super().__init__()
-        self.encoder = encoder
-        self.approximator = approximator
-        self.decoder = decoder
-        self.fc3 = nn.Linear(reconstruction_dim, reconstruction_dim)
-
-    def explain(self, x, mode="distribution"):
-        double_logits_z = self.encoder(x)
-        dim_z = double_logits_z.shape[1] // 2
-        mu = double_logits_z[:, :dim_z].to(x.device)
-        logvar = torch.log(torch.nn.functional.softplus(double_logits_z[:, dim_z:]).pow(2)).to(x.device)
-        logits_z = self.reparametrize(mu, logvar)
-        return logits_z, mu, logvar
-
-    def forward(self, x, mode="distribution"):
-        logits_z, mu, logvar = self.explain(x, mode="distribution")
-        logits_y = self.approximator(logits_z).reshape((x.size(0), -1))
-        if mode == "with_reconstruction":
-            x_hat = self.reconstruction(logits_z)
-            return logits_z, logits_y, x_hat, mu, logvar
-        return logits_z, logits_y, mu, logvar
-
-    def reconstruction(self, logits_z):
-        output_x = self.decoder(logits_z.reshape((logits_z.size(0), -1)))
-        return torch.sigmoid(self.fc3(output_x))
-
-    @staticmethod
-    def reparametrize(mu, logvar):
-        std = logvar.mul(0.5).exp_()
-        return torch.randn_like(std).mul(std).add_(mu)
-
-
-def init_vib(args):
-    reconstruction_dim = 3 * 32 * 32
-    approximator = LinearModel(n_feature=args.dimZ, n_output=args.num_classes)
-    encoder = resnet18(3, args.dimZ * 2)
-    decoder = LinearModel(n_feature=args.dimZ, n_output=reconstruction_dim)
-    vib = VIB(encoder, approximator, decoder, reconstruction_dim)
-    vib.to(args.device)
-    return vib
+def init_vgg16_bn(args):
+    return CIFARVGG16BN(num_classes=args.num_classes).to(args.device)
 
 
 @torch.no_grad()
-def eva_vib(vib, dataloader, args, name):
-    vib.eval()
+def evaluate_classifier(model, dataloader, args, name):
+    model.eval()
     correct = 0
     total = 0
     for x, y in dataloader:
         x, y = x.to(args.device), y.to(args.device)
-        _, logits_y, _, _, _ = vib(x, mode="with_reconstruction")
-        correct += (logits_y.argmax(dim=1) == y).sum().item()
+        logits = model(x)
+        correct += (logits.argmax(dim=1) == y).sum().item()
         total += len(x)
     acc = correct / max(total, 1)
     print(f"{name} model acc: {acc:.4f}")
@@ -219,6 +174,36 @@ def fedavg(state_dicts):
     return averaged
 
 
+def train_original_federated_model(client_subsets, args):
+    """Train the before-unlearning CIFAR VGG-16-BN with full-participation FedAvg."""
+    global_model = init_vgg16_bn(args)
+    loss_fn = nn.CrossEntropyLoss()
+
+    for round_idx in range(1, args.original_global_rounds + 1):
+        client_weights = []
+        for client_subset in client_subsets:
+            local_model = copy.deepcopy(global_model).to(args.device)
+            optimizer = torch.optim.Adam(local_model.parameters(), lr=args.lr)
+            loader = make_loader(client_subset, args.batch_size, shuffle=True, drop_last=True)
+            local_model.train()
+            for _ in range(args.local_epochs):
+                for x, y in loader:
+                    x, y = x.to(args.device), y.to(args.device)
+                    loss = loss_fn(local_model(x), y)
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+            client_weights.append(copy.deepcopy(local_model.state_dict()))
+            del local_model
+
+        global_model.load_state_dict(fedavg(client_weights))
+        global_model.to(args.device)
+        global_model.eval()
+        print(f"Finished original VGG-16-BN FedAvg round {round_idx}/{args.original_global_rounds}")
+
+    return global_model
+
+
 def prepare_unlearning(erase_loader, remain_loader, model, loss_fn, args, num_steps):
     optimizer = torch.optim.Adam(model.parameters(), lr=getattr(args, "unlearning_lr", args.lr))
     model.train()
@@ -230,19 +215,13 @@ def prepare_unlearning(erase_loader, remain_loader, model, loss_fn, args, num_st
 
         x_e, y_e = x_e.to(args.device), y_e.to(args.device)
         x_r, y_r = x_r.to(args.device), y_r.to(args.device)
-        _, logits_e, _, mu_e, logvar_e = model(x_e, mode="with_reconstruction")
-        _, logits_r, _, mu_r, logvar_r = model(x_r, mode="with_reconstruction")
-
-        kld_e = torch.mean(mu_e.pow(2).add_(logvar_e.exp()).mul_(-1).add_(1).add_(logvar_e)).mul_(-0.5)
-        kld_r = torch.mean(mu_r.pow(2).add_(logvar_r.exp()).mul_(-1).add_(1).add_(logvar_r)).mul_(-0.5)
+        logits_e = model(x_e)
+        logits_r = model(x_r)
         loss_e = loss_fn(logits_e, y_e)
         loss_r = loss_fn(logits_r, y_r)
         erase_weight = float(getattr(args, "erase_loss_weight", 0.05))
         retain_weight = float(getattr(args, "retain_loss_weight", 1.0))
-        loss = (
-            0.5 * (args.beta * kld_e - erase_weight * loss_e)
-            + 0.5 * (args.beta * kld_r + retain_weight * loss_r)
-        )
+        loss = 0.5 * (-erase_weight * loss_e + retain_weight * loss_r)
         if not torch.isfinite(loss):
             print("Warning: skipped RFU step because loss is not finite.")
             continue
@@ -274,9 +253,8 @@ def federated_unlearning_one_round(global_model, train_set, client_subsets, args
             for _ in range(args.local_epochs):
                 for x, y in loader:
                     x, y = x.to(args.device), y.to(args.device)
-                    _, logits_y, _, mu, logvar = local_model(x, mode="with_reconstruction")
-                    kld = torch.mean(mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar)).mul_(-0.5)
-                    loss = args.beta * kld + loss_fn(logits_y, y)
+                    logits = local_model(x)
+                    loss = loss_fn(logits, y)
                     optimizer.zero_grad()
                     loss.backward()
                     optimizer.step()
@@ -353,20 +331,19 @@ def build_learned_mia_loaders(train_set, test_set, client_data_info, args, seed=
 
 
 @torch.no_grad()
-def collect_mia_features(vib, dataloader, args, max_samples):
-    vib.eval()
+def collect_mia_features(model, dataloader, args, max_samples):
+    model.eval()
     features = []
     for x, y in dataloader:
         x, y = x.to(args.device), y.to(args.device)
-        _, logits_y, _, mu, logvar = vib(x, mode="with_reconstruction")
-        probs = torch.softmax(logits_y, dim=1)
+        logits = model(x)
+        probs = torch.softmax(logits, dim=1)
         true_probs = probs.gather(1, y.view(-1, 1)).squeeze(1)
-        losses = F.cross_entropy(logits_y, y, reduction="none")
+        losses = F.cross_entropy(logits, y, reduction="none")
         entropy = -(probs * probs.clamp_min(1e-12).log()).sum(dim=1)
         top2 = torch.topk(probs, k=2, dim=1).values
         margin = top2[:, 0] - top2[:, 1]
-        kld = mu.pow(2).add(logvar.exp()).mul(-1).add(1).add(logvar).mean(dim=1).mul(-0.5)
-        features.append(torch.stack([true_probs, -losses, entropy, margin, -kld], dim=1).cpu())
+        features.append(torch.stack([true_probs, -losses, entropy, margin], dim=1).cpu())
         if sum(len(batch) for batch in features) >= max_samples:
             break
     if not features:
@@ -410,10 +387,10 @@ def evaluate_attack_classifier(model, features, labels):
     return probs.cpu().numpy(), acc
 
 
-def learned_membership_inference_attack(vib, erase_loader, retain_loader, nonmember_loader, args, name):
-    retain_features = collect_mia_features(vib, retain_loader, args, args.mia_max_samples)
-    nonmember_features = collect_mia_features(vib, nonmember_loader, args, args.mia_max_samples)
-    erase_features = collect_mia_features(vib, erase_loader, args, args.mia_max_samples)
+def learned_membership_inference_attack(model, erase_loader, retain_loader, nonmember_loader, args, name):
+    retain_features = collect_mia_features(model, retain_loader, args, args.mia_max_samples)
+    nonmember_features = collect_mia_features(model, nonmember_loader, args, args.mia_max_samples)
+    erase_features = collect_mia_features(model, erase_loader, args, args.mia_max_samples)
 
     n_attack = min(len(retain_features), len(nonmember_features))
     retain_features = retain_features[:n_attack]
@@ -519,24 +496,19 @@ def collect_crossleak_activations(before_model, after_model, dataloader, args, m
 
     for x, y, idx in dataloader:
         x = x.to(args.device)
-        before_params = before_model.encoder(x)
-        after_params = after_model.encoder(x)
-        dim_z = before_params.shape[1] // 2
-        mu_before = before_params[:, :dim_z]
-        mu_after = after_params[:, :dim_z]
-        logits_before = before_model.approximator(mu_before).reshape((x.size(0), -1))
-        logits_after = after_model.approximator(mu_after).reshape((x.size(0), -1))
-        input_mode = getattr(args, "crossleak_input_mode", "mu_logits")
-        if input_mode == "mu":
-            h_before = mu_before
-            h_after = mu_after
+        representation_before, logits_before = before_model.forward_with_features(x)
+        representation_after, logits_after = after_model.forward_with_features(x)
+        input_mode = getattr(args, "crossleak_input_mode", "features_logits")
+        if input_mode == "features":
+            h_before = representation_before
+            h_after = representation_after
         elif input_mode == "logits":
             h_before = logits_before
             h_after = logits_after
-        elif input_mode == "mu_logits":
+        elif input_mode == "features_logits":
             logit_weight = float(getattr(args, "crossleak_logit_input_weight", 1.0))
-            h_before = torch.cat([mu_before, logit_weight * logits_before], dim=1)
-            h_after = torch.cat([mu_after, logit_weight * logits_after], dim=1)
+            h_before = torch.cat([representation_before, logit_weight * logits_before], dim=1)
+            h_after = torch.cat([representation_after, logit_weight * logits_after], dim=1)
         else:
             raise ValueError(f"Unknown crossleak_input_mode={input_mode}")
         logit_shift = torch.norm(logits_before - logits_after, dim=1)
@@ -751,8 +723,8 @@ def confidence_drop_probe_scores(before_model, after_model, public_dataset, args
     after_model.eval()
     for x, _ in loader:
         x = x.to(args.device)
-        _, logits_before, _, _, _ = before_model(x, mode="with_reconstruction")
-        _, logits_after, _, _, _ = after_model(x, mode="with_reconstruction")
+        logits_before = before_model(x)
+        logits_after = after_model(x)
         probs_before = torch.softmax(logits_before, dim=1)
         probs_after = torch.softmax(logits_after, dim=1)
         pred_before = probs_before.argmax(dim=1)
@@ -1503,23 +1475,24 @@ def configure_args():
     args.device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() and args.gpu != -1 else "cpu")
     args.dataset = "CIFAR10"
     args.num_classes = 10
-    args.beta = 0.0001
     args.lr = 0.0001
     args.unlearning_lr = float(os.environ.get("CIFAR10_RFU_Unlearning_LR", 0.0001))
     args.erase_loss_weight = float(os.environ.get("CIFAR10_RFU_Erase_Loss_Weight", 0.2))
     args.retain_loss_weight = float(os.environ.get("CIFAR10_RFU_Retain_Loss_Weight", 1.0))
     args.unlearning_step_fraction = float(os.environ.get("CIFAR10_RFU_Unlearning_Step_Fraction", 0.25))
     args.unlearning_grad_clip = float(os.environ.get("CIFAR10_RFU_Unlearning_Grad_Clip", 1.0))
-    args.dimZ = 512
+    args.representation_dim = CIFARVGG16BN.representation_dim
     args.batch_size = 200
     args.num_clients = 10
     args.num_unlearn_clients = int(os.environ.get("CIFAR10_RFU_Unlearning_Clients", 1))
     args.unlearning_ratio = float(os.environ.get("CIFAR10_RFU_Unlearning_Ratio", 0.01))
     args.unlearn_target_classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     args.unlearning_class_range = int(os.environ.get("CIFAR10_RFU_Unlearning_Class_Range", 1))
-    args.global_rounds = 1
+    args.original_global_rounds = int(os.environ.get("CIFAR10_VGG_Global_Rounds", 40))
+    args.unlearning_global_rounds = 1
     args.local_epochs = 5
     args.seed = 0
+    args.client_partition_seed = 0
     args.crossleak_max_samples = 5000
     args.crossleak_latent_dim = 256
     args.crossleak_batch_size = 256
@@ -1528,9 +1501,9 @@ def configure_args():
     args.crossleak_l1_lambda = 0.001
     args.crossleak_delta_l1_lambda = 0.001
     args.crossleak_delta_loss_weight = 1.0
-    args.crossleak_input_mode = "mu_logits"
+    args.crossleak_input_mode = "features_logits"
     args.crossleak_logit_input_weight = 1.0
-    args.crossleak_logit_input_start = args.dimZ
+    args.crossleak_logit_input_start = args.representation_dim
     args.crossleak_delta_shared_fraction = 0.2
     args.crossleak_delta_shared_k = 16
     args.crossleak_delta_k = 8
@@ -1587,18 +1560,8 @@ def load_cifar10_data(args):
     train_set_no_aug = CIFAR10("/home/wwq/Data/data/cifar", train=True, transform=test_transform, download=False)
     train_loader = make_loader(train_set, args.batch_size, shuffle=True)
     test_loader = make_loader(test_set, args.batch_size, shuffle=False)
-    client_subsets = split_dataset_iid(train_set, args.num_clients, seed=args.seed)
+    client_subsets = split_dataset_iid(train_set, args.num_clients, seed=args.client_partition_seed)
     return train_set, train_set_no_aug, test_set, train_loader, test_loader, client_subsets
-
-
-def load_global_cifar10_model(args):
-    ckpt_path = os.path.join(args.results_dir, "global_vib_cifar10_fedavg.pt")
-    ckpt = torch.load(ckpt_path, map_location=args.device)
-    model = init_vib(args)
-    model.load_state_dict(ckpt["model_state"])
-    model.to(args.device)
-    model.eval()
-    return model
 
 
 def set_random_seed(seed):
@@ -1719,7 +1682,7 @@ def print_multi_seed_rfu_summary(seed_metrics):
         print(f"  {name}: mean={values.mean():.4f}, variance={values.var():.6f}")
 
 
-def run_rfu_for_seed(seed):
+def run_rfu_for_seed(seed, before_global_state):
     args = configure_args()
     args.seed = seed
     set_random_seed(args.seed)
@@ -1728,28 +1691,29 @@ def run_rfu_for_seed(seed):
     print("unlearning target classes:", resolve_unlearning_target_classes(args))
 
     train_set, train_set_no_aug, test_set, _, test_loader, client_subsets = load_cifar10_data(args)
-    global_vib = load_global_cifar10_model(args)
-    before_vib = copy.deepcopy(global_vib).eval()
+    before_global = init_vgg16_bn(args)
+    before_global.load_state_dict(before_global_state)
+    before_global.eval()
 
-    acc_before = eva_vib(before_vib, test_loader, args, name="before unlearning")
+    acc_before = evaluate_classifier(before_global, test_loader, args, name="before unlearning")
 
     client_data_info = {}
-    new_global_vib = global_vib
+    after_global = copy.deepcopy(before_global)
     mia_loaders = None
-    for rnd in range(1, args.global_rounds + 1):
-        new_global_vib, chosen_ids, client_data_info = federated_unlearning_one_round(
-            new_global_vib,
+    for rnd in range(1, args.unlearning_global_rounds + 1):
+        after_global, chosen_ids, client_data_info = federated_unlearning_one_round(
+            after_global,
             train_set,
             client_subsets,
             args,
             base_seed=args.seed,
             round_idx=rnd,
         )
-        eva_vib(new_global_vib, test_loader, args, name=f"global round {rnd}")
+        evaluate_classifier(after_global, test_loader, args, name=f"global round {rnd}")
 
         crossleak = crossleak_attack(
-            before_model= copy.deepcopy(before_vib),
-            after_model= copy.deepcopy(new_global_vib),
+            before_model=copy.deepcopy(before_global),
+            after_model=copy.deepcopy(after_global),
             public_dataset=test_set,
             train_set_for_eval=train_set_no_aug,
             client_data_info=client_data_info,
@@ -1757,7 +1721,7 @@ def run_rfu_for_seed(seed):
             name=f"seed {seed} global round {rnd}",
         )
 
-    acc_after = eva_vib(new_global_vib, test_loader, args, name="after unlearning")
+    acc_after = evaluate_classifier(after_global, test_loader, args, name="after unlearning")
 
 
 
@@ -1766,8 +1730,8 @@ def run_rfu_for_seed(seed):
             train_set_no_aug, test_set, client_data_info, args, seed=args.seed + 2024
         )
     erase_loader, retain_loader, nonmember_loader = mia_loaders
-    mia_before = learned_membership_inference_attack(copy.deepcopy(before_vib), erase_loader, retain_loader, nonmember_loader, args, "before unlearning")
-    mia_after = learned_membership_inference_attack(copy.deepcopy(new_global_vib), erase_loader, retain_loader, nonmember_loader, args, "after unlearning")
+    mia_before = learned_membership_inference_attack(copy.deepcopy(before_global), erase_loader, retain_loader, nonmember_loader, args, "before unlearning")
+    mia_after = learned_membership_inference_attack(copy.deepcopy(after_global), erase_loader, retain_loader, nonmember_loader, args, "after unlearning")
 
 
 
@@ -1777,10 +1741,21 @@ def run_rfu_for_seed(seed):
 
 
 def run_rfu():
+    before_args = configure_args()
+    before_args.seed = 0
+    set_random_seed(before_args.seed)
+    _, _, _, _, _, before_client_subsets = load_cifar10_data(before_args)
+    before_global = train_original_federated_model(before_client_subsets, before_args)
+    before_global_state = {
+        name: value.detach().cpu().clone()
+        for name, value in before_global.state_dict().items()
+    }
+    del before_global
+
     seeds = [0, 1, 2, 3, 4]
     seed_metrics = []
     for seed in seeds:
-        seed_metrics.append(run_rfu_for_seed(seed))
+        seed_metrics.append(run_rfu_for_seed(seed, before_global_state))
     print_multi_seed_rfu_summary(seed_metrics)
 
 

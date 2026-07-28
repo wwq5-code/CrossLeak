@@ -1,6 +1,6 @@
 
 
-Hessian unlearning summary across seeds:
+Hessian ResNet18 unlearning summary across seeds:
 Range: 1
   acc_before: mean=0.8673, variance=0.000000
   acc_after: mean=0.8701, variance=0.000003
@@ -37,145 +37,7 @@ Range: 1
 
 
 
-Hessian unlearning summary across seeds:
-Range: 2
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8705, variance=0.000003
-  mia_acc_before: mean=0.5809, variance=0.000038
-  mia_acc_after: mean=0.5806, variance=0.000128
-  feature_vote_precision: mean=0.1000, variance=0.040000
-  feature_vote_recall: mean=0.1000, variance=0.040000
-  feature_vote_overlap: mean=0.1000, variance=0.040000
-  delta_z_precision: mean=0.1000, variance=0.040000
-  delta_z_recall: mean=0.1000, variance=0.040000
-  delta_z_overlap: mean=0.1000, variance=0.040000
-  confidence_drop_precision: mean=0.1000, variance=0.040000
-  confidence_drop_recall: mean=0.1000, variance=0.040000
-  confidence_drop_overlap: mean=0.1000, variance=0.040000
-  hybrid_precision: mean=0.0000, variance=0.000000
-  hybrid_recall: mean=0.0000, variance=0.000000
-  hybrid_overlap: mean=0.0000, variance=0.000000
-  ulia_known_k_precision: mean=0.6000, variance=0.040000
-  ulia_known_k_recall: mean=0.6000, variance=0.040000
-  ulia_known_k_overlap: mean=0.6000, variance=0.040000
-  ulia_dynamic_precision: mean=0.6000, variance=0.140000
-  ulia_dynamic_recall: mean=0.4000, variance=0.040000
-  ulia_dynamic_overlap: mean=0.4000, variance=0.040000
-  before_exclusive_strength_ratio: mean=0.5185, variance=0.076547
-  target_label_feature_coverage: mean=1.0000, variance=0.000000
-  clip_concept_coverage: mean=0.8000, variance=0.160000
-  clip_concept_precision: mean=0.1241, variance=0.004699
-  clip_weighted_coverage: mean=0.7266, variance=0.132437
-  feature_overlap@1: mean=0.6000, variance=0.240000
-  feature_overlap@5: mean=0.4400, variance=0.006400
-  feature_overlap@10: mean=0.4400, variance=0.002400
-
-
-Hessian unlearning summary across seeds:
-Range: 3
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8703, variance=0.000002
-  mia_acc_before: mean=0.5802, variance=0.000047
-  mia_acc_after: mean=0.5824, variance=0.000109
-  feature_vote_precision: mean=0.4000, variance=0.062222
-  feature_vote_recall: mean=0.4000, variance=0.062222
-  feature_vote_overlap: mean=0.4000, variance=0.062222
-  delta_z_precision: mean=0.4000, variance=0.017778
-  delta_z_recall: mean=0.4000, variance=0.017778
-  delta_z_overlap: mean=0.4000, variance=0.017778
-  confidence_drop_precision: mean=0.2000, variance=0.026667
-  confidence_drop_recall: mean=0.2000, variance=0.026667
-  confidence_drop_overlap: mean=0.2000, variance=0.026667
-  hybrid_precision: mean=0.2000, variance=0.026667
-  hybrid_recall: mean=0.2000, variance=0.026667
-  hybrid_overlap: mean=0.2000, variance=0.026667
-  ulia_known_k_precision: mean=0.3333, variance=0.000000
-  ulia_known_k_recall: mean=0.3333, variance=0.000000
-  ulia_known_k_overlap: mean=0.3333, variance=0.000000
-  ulia_dynamic_precision: mean=0.5000, variance=0.100000
-  ulia_dynamic_recall: mean=0.2667, variance=0.017778
-  ulia_dynamic_overlap: mean=0.2667, variance=0.017778
-  before_exclusive_strength_ratio: mean=0.5138, variance=0.033055
-  target_label_feature_coverage: mean=1.0000, variance=0.000000
-  clip_concept_coverage: mean=0.8667, variance=0.026667
-  clip_concept_precision: mean=0.3425, variance=0.015545
-  clip_weighted_coverage: mean=0.7409, variance=0.024247
-  feature_overlap@1: mean=0.4000, variance=0.240000
-  feature_overlap@5: mean=0.4800, variance=0.009600
-  feature_overlap@10: mean=0.5600, variance=0.014400
-
-
-Hessian unlearning summary across seeds:
-Range: 4
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8702, variance=0.000003
-  mia_acc_before: mean=0.5851, variance=0.000063
-  mia_acc_after: mean=0.5803, variance=0.000081
-  feature_vote_precision: mean=0.2500, variance=0.050000
-  feature_vote_recall: mean=0.2500, variance=0.050000
-  feature_vote_overlap: mean=0.2500, variance=0.050000
-  delta_z_precision: mean=0.5500, variance=0.010000
-  delta_z_recall: mean=0.5500, variance=0.010000
-  delta_z_overlap: mean=0.5500, variance=0.010000
-  confidence_drop_precision: mean=0.5500, variance=0.035000
-  confidence_drop_recall: mean=0.5500, variance=0.035000
-  confidence_drop_overlap: mean=0.5500, variance=0.035000
-  hybrid_precision: mean=0.4000, variance=0.015000
-  hybrid_recall: mean=0.4000, variance=0.015000
-  hybrid_overlap: mean=0.4000, variance=0.015000
-  ulia_known_k_precision: mean=0.4000, variance=0.015000
-  ulia_known_k_recall: mean=0.4000, variance=0.015000
-  ulia_known_k_overlap: mean=0.4000, variance=0.015000
-  ulia_dynamic_precision: mean=0.5000, variance=0.100000
-  ulia_dynamic_recall: mean=0.2000, variance=0.010000
-  ulia_dynamic_overlap: mean=0.2000, variance=0.010000
-  before_exclusive_strength_ratio: mean=0.5348, variance=0.018635
-  target_label_feature_coverage: mean=1.0000, variance=0.000000
-  clip_concept_coverage: mean=0.7500, variance=0.025000
-  clip_concept_precision: mean=0.3976, variance=0.003152
-  clip_weighted_coverage: mean=0.6471, variance=0.016529
-  feature_overlap@1: mean=0.2000, variance=0.160000
-  feature_overlap@5: mean=0.3600, variance=0.054400
-  feature_overlap@10: mean=0.5800, variance=0.025600
-
-
-
-Hessian unlearning summary across seeds:
-Range: 5
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8702, variance=0.000002
-  mia_acc_before: mean=0.5830, variance=0.000167
-  mia_acc_after: mean=0.5817, variance=0.000115
-  feature_vote_precision: mean=0.4800, variance=0.025600
-  feature_vote_recall: mean=0.4800, variance=0.025600
-  feature_vote_overlap: mean=0.4800, variance=0.025600
-  delta_z_precision: mean=0.5600, variance=0.022400
-  delta_z_recall: mean=0.5600, variance=0.022400
-  delta_z_overlap: mean=0.5600, variance=0.022400
-  confidence_drop_precision: mean=0.6800, variance=0.025600
-  confidence_drop_recall: mean=0.6800, variance=0.025600
-  confidence_drop_overlap: mean=0.6800, variance=0.025600
-  hybrid_precision: mean=0.5600, variance=0.006400
-  hybrid_recall: mean=0.5600, variance=0.006400
-  hybrid_overlap: mean=0.5600, variance=0.006400
-  ulia_known_k_precision: mean=0.5600, variance=0.006400
-  ulia_known_k_recall: mean=0.5600, variance=0.006400
-  ulia_known_k_overlap: mean=0.5600, variance=0.006400
-  ulia_dynamic_precision: mean=0.9000, variance=0.040000
-  ulia_dynamic_recall: mean=0.2400, variance=0.006400
-  ulia_dynamic_overlap: mean=0.2400, variance=0.006400
-  before_exclusive_strength_ratio: mean=0.5549, variance=0.023515
-  target_label_feature_coverage: mean=0.9600, variance=0.006400
-  clip_concept_coverage: mean=0.8400, variance=0.006400
-  clip_concept_precision: mean=0.5317, variance=0.005316
-  clip_weighted_coverage: mean=0.7466, variance=0.004731
-  feature_overlap@1: mean=0.4000, variance=0.240000
-  feature_overlap@5: mean=0.6000, variance=0.016000
-  feature_overlap@10: mean=0.7000, variance=0.012000
-
-
-
-RFU summary across seeds:
+RFU ResNet18 summary across seeds:
 Range: 1
   acc_before: mean=0.8673, variance=0.000000
   acc_after: mean=0.8662, variance=0.000001
@@ -209,147 +71,11 @@ Range: 1
   feature_overlap@10: mean=0.4600, variance=0.022400
 
 
-RFU summary across seeds:
-Range: 2
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8663, variance=0.000001
-  mia_acc_before: mean=0.5814, variance=0.000033
-  mia_acc_after: mean=0.5867, variance=0.000018
-  feature_vote_precision: mean=0.3000, variance=0.060000
-  feature_vote_recall: mean=0.3000, variance=0.060000
-  feature_vote_overlap: mean=0.3000, variance=0.060000
-  delta_z_precision: mean=0.5000, variance=0.000000
-  delta_z_recall: mean=0.5000, variance=0.000000
-  delta_z_overlap: mean=0.5000, variance=0.000000
-  confidence_drop_precision: mean=0.6000, variance=0.040000
-  confidence_drop_recall: mean=0.6000, variance=0.040000
-  confidence_drop_overlap: mean=0.6000, variance=0.040000
-  hybrid_precision: mean=0.4000, variance=0.140000
-  hybrid_recall: mean=0.4000, variance=0.140000
-  hybrid_overlap: mean=0.4000, variance=0.140000
-  ulia_known_k_precision: mean=0.8000, variance=0.060000
-  ulia_known_k_recall: mean=0.8000, variance=0.060000
-  ulia_known_k_overlap: mean=0.8000, variance=0.060000
-  ulia_dynamic_precision: mean=1.0000, variance=0.000000
-  ulia_dynamic_recall: mean=0.6000, variance=0.040000
-  ulia_dynamic_overlap: mean=0.6000, variance=0.040000
-  before_exclusive_strength_ratio: mean=0.7356, variance=0.007347
-  target_label_feature_coverage: mean=1.0000, variance=0.000000
-  clip_concept_coverage: mean=1.0000, variance=0.000000
-  clip_concept_precision: mean=0.2299, variance=0.002548
-  clip_weighted_coverage: mean=0.9191, variance=0.000787
-  feature_overlap@1: mean=0.0000, variance=0.000000
-  feature_overlap@5: mean=0.4800, variance=0.009600
-  feature_overlap@10: mean=0.5400, variance=0.018400
-
-
-RFU summary across seeds:
-Range: 3
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8667, variance=0.000000
-  mia_acc_before: mean=0.5864, variance=0.000039
-  mia_acc_after: mean=0.5686, variance=0.000006
-  feature_vote_precision: mean=0.4667, variance=0.026667
-  feature_vote_recall: mean=0.4667, variance=0.026667
-  feature_vote_overlap: mean=0.4667, variance=0.026667
-  delta_z_precision: mean=0.6667, variance=0.000000
-  delta_z_recall: mean=0.6667, variance=0.000000
-  delta_z_overlap: mean=0.6667, variance=0.000000
-  confidence_drop_precision: mean=0.6667, variance=0.000000
-  confidence_drop_recall: mean=0.6667, variance=0.000000
-  confidence_drop_overlap: mean=0.6667, variance=0.000000
-  hybrid_precision: mean=0.5333, variance=0.026667
-  hybrid_recall: mean=0.5333, variance=0.026667
-  hybrid_overlap: mean=0.5333, variance=0.026667
-  ulia_known_k_precision: mean=0.6667, variance=0.044444
-  ulia_known_k_recall: mean=0.6667, variance=0.044444
-  ulia_known_k_overlap: mean=0.6667, variance=0.044444
-  ulia_dynamic_precision: mean=1.0000, variance=0.000000
-  ulia_dynamic_recall: mean=0.3333, variance=0.000000
-  ulia_dynamic_overlap: mean=0.3333, variance=0.000000
-  before_exclusive_strength_ratio: mean=0.5084, variance=0.007257
-  target_label_feature_coverage: mean=1.0000, variance=0.000000
-  clip_concept_coverage: mean=1.0000, variance=0.000000
-  clip_concept_precision: mean=0.4340, variance=0.003388
-  clip_weighted_coverage: mean=0.9034, variance=0.001031
-  feature_overlap@1: mean=0.2000, variance=0.160000
-  feature_overlap@5: mean=0.6000, variance=0.064000
-  feature_overlap@10: mean=0.6000, variance=0.008000
-
-
-
-RFU summary across seeds:
-Range: 4
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8682, variance=0.000002
-  mia_acc_before: mean=0.5830, variance=0.000031
-  mia_acc_after: mean=0.5791, variance=0.000052
-  feature_vote_precision: mean=0.5000, variance=0.025000
-  feature_vote_recall: mean=0.5000, variance=0.025000
-  feature_vote_overlap: mean=0.5000, variance=0.025000
-  delta_z_precision: mean=0.7000, variance=0.010000
-  delta_z_recall: mean=0.7000, variance=0.010000
-  delta_z_overlap: mean=0.7000, variance=0.010000
-  confidence_drop_precision: mean=0.8500, variance=0.015000
-  confidence_drop_recall: mean=0.8500, variance=0.015000
-  confidence_drop_overlap: mean=0.8500, variance=0.015000
-  hybrid_precision: mean=0.6500, variance=0.065000
-  hybrid_recall: mean=0.6500, variance=0.065000
-  hybrid_overlap: mean=0.6500, variance=0.065000
-  ulia_known_k_precision: mean=0.5500, variance=0.010000
-  ulia_known_k_recall: mean=0.5500, variance=0.010000
-  ulia_known_k_overlap: mean=0.5500, variance=0.010000
-  ulia_dynamic_precision: mean=0.9000, variance=0.040000
-  ulia_dynamic_recall: mean=0.3500, variance=0.015000
-  ulia_dynamic_overlap: mean=0.3500, variance=0.015000
-  before_exclusive_strength_ratio: mean=0.6098, variance=0.036438
-  target_label_feature_coverage: mean=1.0000, variance=0.000000
-  clip_concept_coverage: mean=0.9000, variance=0.015000
-  clip_concept_precision: mean=0.4667, variance=0.004753
-  clip_weighted_coverage: mean=0.8304, variance=0.015807
-  feature_overlap@1: mean=0.4000, variance=0.240000
-  feature_overlap@5: mean=0.6400, variance=0.006400
-  feature_overlap@10: mean=0.6600, variance=0.018400
-
-
-
-RFU summary across seeds:
-Range: 5
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8688, variance=0.000001
-  mia_acc_before: mean=0.5806, variance=0.000072
-  mia_acc_after: mean=0.5778, variance=0.000153
-  feature_vote_precision: mean=0.5333, variance=0.012444
-  feature_vote_recall: mean=0.4800, variance=0.009600
-  feature_vote_overlap: mean=0.4800, variance=0.009600
-  delta_z_precision: mean=0.6000, variance=0.016000
-  delta_z_recall: mean=0.6000, variance=0.016000
-  delta_z_overlap: mean=0.6000, variance=0.016000
-  confidence_drop_precision: mean=0.7600, variance=0.038400
-  confidence_drop_recall: mean=0.7600, variance=0.038400
-  confidence_drop_overlap: mean=0.7600, variance=0.038400
-  hybrid_precision: mean=0.6400, variance=0.054400
-  hybrid_recall: mean=0.6400, variance=0.054400
-  hybrid_overlap: mean=0.6400, variance=0.054400
-  ulia_known_k_precision: mean=0.5200, variance=0.009600
-  ulia_known_k_recall: mean=0.5200, variance=0.009600
-  ulia_known_k_overlap: mean=0.5200, variance=0.009600
-  ulia_dynamic_precision: mean=1.0000, variance=0.000000
-  ulia_dynamic_recall: mean=0.2800, variance=0.009600
-  ulia_dynamic_overlap: mean=0.2800, variance=0.009600
-  before_exclusive_strength_ratio: mean=0.5749, variance=0.075415
-  target_label_feature_coverage: mean=0.9600, variance=0.006400
-  clip_concept_coverage: mean=0.8000, variance=0.048000
-  clip_concept_precision: mean=0.5622, variance=0.003141
-  clip_weighted_coverage: mean=0.7317, variance=0.034646
-  feature_overlap@1: mean=0.0000, variance=0.000000
-  feature_overlap@5: mean=0.4800, variance=0.009600
-  feature_overlap@10: mean=0.6800, variance=0.017600
 
 
 
 
-FL retraining summary across seeds:
+FL retraining ResNet18 summary across seeds:
 Range: 1
   acc_before: mean=0.8673, variance=0.000000
   acc_after: mean=0.7203, variance=0.096189
@@ -383,141 +109,35 @@ Range: 1
   feature_overlap@10: mean=0.8000, variance=0.028000
 
 
-
-FL retraining summary across seeds:
-Range: 2
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8741, variance=0.000002
-  mia_acc_before: mean=0.5883, variance=0.000040
-  mia_acc_after: mean=0.5879, variance=0.000057
-  feature_vote_precision: mean=0.3000, variance=0.160000
-  feature_vote_recall: mean=0.2000, variance=0.060000
-  feature_vote_overlap: mean=0.2000, variance=0.060000
-  delta_z_precision: mean=0.1000, variance=0.040000
-  delta_z_recall: mean=0.1000, variance=0.040000
-  delta_z_overlap: mean=0.1000, variance=0.040000
-  confidence_drop_precision: mean=0.6000, variance=0.040000
-  confidence_drop_recall: mean=0.6000, variance=0.040000
-  confidence_drop_overlap: mean=0.6000, variance=0.040000
-  hybrid_precision: mean=0.3000, variance=0.060000
-  hybrid_recall: mean=0.3000, variance=0.060000
-  hybrid_overlap: mean=0.3000, variance=0.060000
-  ulia_known_k_precision: mean=0.1000, variance=0.040000
-  ulia_known_k_recall: mean=0.1000, variance=0.040000
-  ulia_known_k_overlap: mean=0.1000, variance=0.040000
-  ulia_dynamic_precision: mean=0.1000, variance=0.040000
-  ulia_dynamic_recall: mean=0.1000, variance=0.040000
-  ulia_dynamic_overlap: mean=0.1000, variance=0.040000
-  before_exclusive_strength_ratio: mean=0.1741, variance=0.014900
-  target_label_feature_coverage: mean=0.7000, variance=0.060000
-  clip_concept_coverage: mean=0.6000, variance=0.040000
-  clip_concept_precision: mean=0.2500, variance=0.005556
-  clip_weighted_coverage: mean=0.5064, variance=0.030388
-  feature_overlap@1: mean=0.2000, variance=0.160000
-  feature_overlap@5: mean=0.6400, variance=0.022400
-  feature_overlap@10: mean=0.8000, variance=0.004000
-
-
-
-
-FL retraining summary across seeds:
-Range: 3
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8754, variance=0.000003
-  mia_acc_before: mean=0.5848, variance=0.000029
-  mia_acc_after: mean=0.5812, variance=0.000117
-  feature_vote_precision: mean=0.2667, variance=0.151111
-  feature_vote_recall: mean=0.2667, variance=0.151111
-  feature_vote_overlap: mean=0.2667, variance=0.151111
-  delta_z_precision: mean=0.2000, variance=0.026667
-  delta_z_recall: mean=0.2000, variance=0.026667
-  delta_z_overlap: mean=0.2000, variance=0.026667
-  confidence_drop_precision: mean=0.4667, variance=0.026667
-  confidence_drop_recall: mean=0.4667, variance=0.026667
-  confidence_drop_overlap: mean=0.4667, variance=0.026667
-  hybrid_precision: mean=0.4667, variance=0.026667
-  hybrid_recall: mean=0.4667, variance=0.026667
-  hybrid_overlap: mean=0.4667, variance=0.026667
-  ulia_known_k_precision: mean=0.2667, variance=0.062222
-  ulia_known_k_recall: mean=0.2667, variance=0.062222
-  ulia_known_k_overlap: mean=0.2667, variance=0.062222
-  ulia_dynamic_precision: mean=0.2000, variance=0.060000
-  ulia_dynamic_recall: mean=0.1333, variance=0.026667
-  ulia_dynamic_overlap: mean=0.1333, variance=0.026667
-  before_exclusive_strength_ratio: mean=0.1543, variance=0.022345
-  target_label_feature_coverage: mean=0.8667, variance=0.026667
-  clip_concept_coverage: mean=0.5333, variance=0.160000
-  clip_concept_precision: mean=0.3333, variance=0.044444
-  clip_weighted_coverage: mean=0.4584, variance=0.125625
-  feature_overlap@1: mean=0.0000, variance=0.000000
-  feature_overlap@5: mean=0.5600, variance=0.022400
-  feature_overlap@10: mean=0.8800, variance=0.013600
-
-
-FL retraining summary across seeds:
-Range: 4
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8744, variance=0.000002
-  mia_acc_before: mean=0.5821, variance=0.000048
-  mia_acc_after: mean=0.5825, variance=0.000029
-  feature_vote_precision: mean=0.3000, variance=0.035000
-  feature_vote_recall: mean=0.3000, variance=0.035000
-  feature_vote_overlap: mean=0.3000, variance=0.035000
-  delta_z_precision: mean=0.3500, variance=0.015000
-  delta_z_recall: mean=0.3500, variance=0.015000
-  delta_z_overlap: mean=0.3500, variance=0.015000
-  confidence_drop_precision: mean=0.5000, variance=0.025000
-  confidence_drop_recall: mean=0.5000, variance=0.025000
-  confidence_drop_overlap: mean=0.5000, variance=0.025000
-  hybrid_precision: mean=0.4500, variance=0.010000
-  hybrid_recall: mean=0.4500, variance=0.010000
-  hybrid_overlap: mean=0.4500, variance=0.010000
-  ulia_known_k_precision: mean=0.5000, variance=0.025000
-  ulia_known_k_recall: mean=0.5000, variance=0.025000
-  ulia_known_k_overlap: mean=0.5000, variance=0.025000
-  ulia_dynamic_precision: mean=0.2000, variance=0.060000
-  ulia_dynamic_recall: mean=0.1000, variance=0.015000
-  ulia_dynamic_overlap: mean=0.1000, variance=0.015000
-  before_exclusive_strength_ratio: mean=0.1593, variance=0.010303
-  target_label_feature_coverage: mean=0.8000, variance=0.010000
-  clip_concept_coverage: mean=0.4000, variance=0.040000
-  clip_concept_precision: mean=0.3333, variance=0.033333
-  clip_weighted_coverage: mean=0.3584, variance=0.032479
-  feature_overlap@1: mean=0.0000, variance=0.000000
-  feature_overlap@5: mean=0.7600, variance=0.006400
-  feature_overlap@10: mean=0.8800, variance=0.005600
-
-
-
-FL retraining summary across seeds:
-Range: 5
-  acc_before: mean=0.8673, variance=0.000000
-  acc_after: mean=0.8766, variance=0.000003
-  mia_acc_before: mean=0.5847, variance=0.000045
-  mia_acc_after: mean=0.5834, variance=0.000033
-  feature_vote_precision: mean=0.4067, variance=0.050844
-  feature_vote_recall: mean=0.3600, variance=0.054400
-  feature_vote_overlap: mean=0.3600, variance=0.054400
-  delta_z_precision: mean=0.6400, variance=0.006400
-  delta_z_recall: mean=0.6400, variance=0.006400
-  delta_z_overlap: mean=0.6400, variance=0.006400
-  confidence_drop_precision: mean=0.6000, variance=0.000000
-  confidence_drop_recall: mean=0.6000, variance=0.000000
-  confidence_drop_overlap: mean=0.6000, variance=0.000000
-  hybrid_precision: mean=0.5600, variance=0.006400
-  hybrid_recall: mean=0.5600, variance=0.006400
-  hybrid_overlap: mean=0.5600, variance=0.006400
-  ulia_known_k_precision: mean=0.5600, variance=0.022400
-  ulia_known_k_recall: mean=0.5600, variance=0.022400
-  ulia_known_k_overlap: mean=0.5600, variance=0.022400
-  ulia_dynamic_precision: mean=0.2000, variance=0.060000
-  ulia_dynamic_recall: mean=0.0800, variance=0.009600
-  ulia_dynamic_overlap: mean=0.0800, variance=0.009600
-  before_exclusive_strength_ratio: mean=0.1820, variance=0.023006
-  target_label_feature_coverage: mean=0.7600, variance=0.006400
-  clip_concept_coverage: mean=0.4800, variance=0.073600
-  clip_concept_precision: mean=0.4944, variance=0.063086
-  clip_weighted_coverage: mean=0.4120, variance=0.058378
-  feature_overlap@1: mean=0.6000, variance=0.240000
-  feature_overlap@5: mean=0.7200, variance=0.009600
-  feature_overlap@10: mean=0.9200, variance=0.005600
+RFU VGG summary across seeds:
+Range: 1
+  acc_before: mean=0.8449, variance=0.000000
+  acc_after: mean=0.8424, variance=0.000001
+  mia_acc_before: mean=0.5869, variance=0.000036
+  mia_acc_after: mean=0.5845, variance=0.000036
+  feature_vote_precision: mean=0.4000, variance=0.240000
+  feature_vote_recall: mean=0.4000, variance=0.240000
+  feature_vote_overlap: mean=0.4000, variance=0.240000
+  delta_z_precision: mean=0.0000, variance=0.000000
+  delta_z_recall: mean=0.0000, variance=0.000000
+  delta_z_overlap: mean=0.0000, variance=0.000000
+  confidence_drop_precision: mean=0.0000, variance=0.000000
+  confidence_drop_recall: mean=0.0000, variance=0.000000
+  confidence_drop_overlap: mean=0.0000, variance=0.000000
+  hybrid_precision: mean=0.4000, variance=0.240000
+  hybrid_recall: mean=0.4000, variance=0.240000
+  hybrid_overlap: mean=0.4000, variance=0.240000
+  ulia_known_k_precision: mean=1.0000, variance=0.000000
+  ulia_known_k_recall: mean=1.0000, variance=0.000000
+  ulia_known_k_overlap: mean=1.0000, variance=0.000000
+  ulia_dynamic_precision: mean=1.0000, variance=0.000000
+  ulia_dynamic_recall: mean=1.0000, variance=0.000000
+  ulia_dynamic_overlap: mean=1.0000, variance=0.000000
+  before_exclusive_strength_ratio: mean=0.5031, variance=0.001913
+  target_label_feature_coverage: mean=1.0000, variance=0.000000
+  clip_concept_coverage: mean=1.0000, variance=0.000000
+  clip_concept_precision: mean=0.0917, variance=0.000944
+  clip_weighted_coverage: mean=0.8937, variance=0.007025
+  feature_overlap@1: mean=0.4000, variance=0.240000
+  feature_overlap@5: mean=0.2800, variance=0.009600
+  feature_overlap@10: mean=0.2800, variance=0.017600

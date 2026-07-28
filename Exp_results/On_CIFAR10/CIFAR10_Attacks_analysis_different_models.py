@@ -6,11 +6,11 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent
-RESULTS_FILE = BASE_DIR / "results_unl_ratio.txt"
-FIG_DIR = BASE_DIR / "figures_attacks_ratio"
-TABLE_DIR = BASE_DIR / "tables_attacks_ratio"
-OUTPUT_PREFIX = "CIFAR10_Attacks_unl_ratio"
-TABLE_NAME = "parsed_cifar10_attack_ratio_results.csv"
+RESULTS_FILE = BASE_DIR / "results_different_models.txt"
+FIG_DIR = BASE_DIR / "figures_attacks_different_models"
+TABLE_DIR = BASE_DIR / "tables_attacks_different_models"
+OUTPUT_PREFIX = "CIFAR10_Attacks_different_models"
+TABLE_NAME = "parsed_cifar10_attack_different_models_results.csv"
 
 os.environ.setdefault("MPLCONFIGDIR", str(BASE_DIR / ".mplconfig"))
 os.environ.setdefault("MPLBACKEND", "Agg")
@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 
 
 SECTION_RE = re.compile(r"^\s*(?P<section>.+?summary across seeds):\s*$")
-RATIO_RE = re.compile(r"^\s*Ratio:\s*(?P<ratio>[-+]?(?:\d+(?:\.\d*)?|\.\d+))\s*$")
 METRIC_RE = re.compile(
     r"^\s*(?P<metric>[A-Za-z0-9_@]+):\s*"
     r"mean=(?P<mean>[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?),\s*"
@@ -52,20 +51,27 @@ PALETTE = {
 EXCLUDED_METRIC_PREFIXES = ("hybrid", "clip_weighted_coverage")
 
 
-def method_from_section(section):
-    normalized = section.strip().lower()
-    if normalized.startswith("fl retraining"):
-        return "Retraining"
-    if normalized.startswith("hessian unlearning"):
-        return "Hessian"
-    if normalized.startswith("rfu"):
-        return "RFU"
-    return None
+def model_sort_key(model):
+    preferred_order = {"ResNet18": 0, "VGG": 1}
+    return preferred_order.get(model, len(preferred_order)), model.lower()
+
+
+def method_and_model_from_section(section):
+    section = section.strip()
+    patterns = [
+        ("Retraining", r"^FL retraining\s+(?P<model>.+)$"),
+        ("Hessian", r"^Hessian\s+(?P<model>.+?)\s+unlearning$"),
+        ("RFU", r"^RFU\s+(?P<model>.+)$"),
+    ]
+    for method, pattern in patterns:
+        match = re.match(pattern, section, flags=re.IGNORECASE)
+        if match:
+            return method, match.group("model").strip()
+    return None, None
 
 
 def parse_results(results_file=RESULTS_FILE):
     rows = []
-    current_method = None
     current_row = None
 
     with results_file.open("r", encoding="utf-8") as f:
@@ -79,17 +85,14 @@ def parse_results(results_file=RESULTS_FILE):
                 if current_row is not None:
                     rows.append(current_row)
                     current_row = None
-                current_method = method_from_section(section_match.group("section"))
-                continue
-
-            ratio_match = RATIO_RE.match(line)
-            if ratio_match and current_method is not None:
-                if current_row is not None:
-                    rows.append(current_row)
-                current_row = {
-                    "method": current_method,
-                    "ratio": float(ratio_match.group("ratio")),
-                }
+                method, model = method_and_model_from_section(section_match.group("section"))
+                if method is not None:
+                    current_row = {
+                        "method": method,
+                        "model": model,
+                    }
+                else:
+                    current_row = None
                 continue
 
             metric_match = METRIC_RE.match(line)
@@ -105,8 +108,8 @@ def parse_results(results_file=RESULTS_FILE):
         rows.append(current_row)
 
     if not rows:
-        raise RuntimeError(f"No attack ratio summary rows parsed from {results_file}")
-    return sorted(rows, key=lambda row: (METHOD_ORDER.index(row["method"]), row["ratio"]))
+        raise RuntimeError(f"No different-model summary rows parsed from {results_file}")
+    return sorted(rows, key=lambda row: (model_sort_key(row["model"]), METHOD_ORDER.index(row["method"])))
 
 
 def configure_plot_style():
@@ -159,23 +162,38 @@ def rows_for_method(rows, method):
     return [row for row in rows if row["method"] == method]
 
 
-def ratio_ticks_from_rows(rows):
-    return sorted({row["ratio"] for row in rows})
+def models_in_rows(rows):
+    return sorted({row["model"] for row in rows}, key=model_sort_key)
 
 
-def set_ratio_axis(ax, rows):
-    ticks = ratio_ticks_from_rows(rows)
-    ax.set_xlabel("Unlearning Ratio")
-    ax.set_xticks(ticks)
-    ax.set_xticklabels([f"{tick:.2f}" for tick in ticks])
+def set_model_axis(ax, rows):
+    models = models_in_rows(rows)
+    ax.set_xlabel("Model Architecture")
+    ax.set_xticks(range(len(models)))
+    ax.set_xticklabels(models)
+    if len(models) > 1:
+        ax.set_xlim(-0.25, len(models) - 0.75)
 
 
-def metric_values(method_rows, metric, scale=1.0):
+def metric_values(method_rows, metric, models, scale=1.0):
+    model_positions = {model: index for index, model in enumerate(models)}
     available_rows = [row for row in method_rows if metric in row]
-    x = [row["ratio"] for row in available_rows]
+    available_rows.sort(key=lambda row: model_sort_key(row["model"]))
+    x = [model_positions[row["model"]] for row in available_rows]
     y = [row[metric] * scale for row in available_rows]
     std = [row.get(f"{metric}_std", 0.0) * scale for row in available_rows]
     return x, y, std
+
+
+def baseline_rows(rows):
+    """Choose one before-unlearning baseline per model, preferring RFU."""
+    selected = []
+    for model in models_in_rows(rows):
+        candidates = [row for row in rows if row["model"] == model]
+        candidates.sort(key=lambda row: (row["method"] != "RFU", METHOD_ORDER.index(row["method"])))
+        if candidates:
+            selected.append(candidates[0])
+    return selected
 
 
 def plot_with_band(ax, x, y, std, label, color, marker, linestyle="-", linewidth=3.0):
@@ -211,10 +229,10 @@ def save_tables(rows):
         key
         for row in rows
         for key in row
-        if key not in {"method", "ratio"} and not key.endswith("_std") and not key.endswith("_variance")
+        if key not in {"method", "model"} and not key.endswith("_std") and not key.endswith("_variance")
         and not key.startswith(EXCLUDED_METRIC_PREFIXES)
     })
-    fieldnames = ["method", "ratio"]
+    fieldnames = ["method", "model"]
     for metric in metric_names:
         fieldnames.extend([metric, f"{metric}_std", f"{metric}_variance"])
 
@@ -226,19 +244,20 @@ def save_tables(rows):
 
 
 def plot_utility(rows, output_prefix=OUTPUT_PREFIX):
+    models = models_in_rows(rows)
     fig, ax = plt.subplots(figsize=(8.0, 5.4))
     for method in methods_in_rows(rows):
         marker, linestyle = METHOD_STYLES[method]
         method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "acc_after", scale=100.0)
+        x, y, std = metric_values(method_rows, "acc_after", models, scale=100.0)
         plot_with_band(ax, x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
 
-    before_rows = rows_for_method(rows, methods_in_rows(rows)[0])
+    before_rows = baseline_rows(rows)
     if before_rows:
-        x, y, _ = metric_values(before_rows, "acc_before", scale=100.0)
+        x, y, _ = metric_values(before_rows, "acc_before", models, scale=100.0)
         ax.plot(x, y, color=PALETTE["before"], linestyle=":", linewidth=2.5, label="Before unlearning")
 
-    set_ratio_axis(ax, rows)
+    set_model_axis(ax, rows)
     ax.set_ylabel("Test Accuracy (%)")
     ax.set_ylim(0, 95)
     style_legend(ax.legend(loc="best", fancybox=True))
@@ -247,20 +266,21 @@ def plot_utility(rows, output_prefix=OUTPUT_PREFIX):
 
 
 def plot_mia(rows, output_prefix=OUTPUT_PREFIX):
+    models = models_in_rows(rows)
     fig, ax = plt.subplots(figsize=(8.0, 5.4))
     for method in methods_in_rows(rows):
         marker, linestyle = METHOD_STYLES[method]
         method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "mia_acc_after", scale=100.0)
+        x, y, std = metric_values(method_rows, "mia_acc_after", models, scale=100.0)
         plot_with_band(ax, x, y, std, f"{METHOD_LABELS[method]} after", PALETTE[method], marker, linestyle)
 
-    before_rows = rows_for_method(rows, methods_in_rows(rows)[0])
+    before_rows = baseline_rows(rows)
     if before_rows:
-        x, y, std = metric_values(before_rows, "mia_acc_before", scale=100.0)
+        x, y, std = metric_values(before_rows, "mia_acc_before", models, scale=100.0)
         plot_with_band(ax, x, y, std, "Before unlearning", PALETTE["before"], "v", ":")
 
     ax.axhline(50, color="#555555", linestyle=":", linewidth=2.0)
-    set_ratio_axis(ax, rows)
+    set_model_axis(ax, rows)
     ax.set_ylabel("MIA Accuracy (%)")
     ax.set_ylim(48, 62)
     style_legend(ax.legend(loc="best", fancybox=True))
@@ -269,6 +289,7 @@ def plot_mia(rows, output_prefix=OUTPUT_PREFIX):
 
 
 def plot_label_inference(rows, output_prefix=OUTPUT_PREFIX):
+    models = models_in_rows(rows)
     metrics = [
         ("delta_z_overlap", "CrossLeak"),
         ("confidence_drop_overlap", "Confidence drop"),
@@ -280,10 +301,10 @@ def plot_label_inference(rows, output_prefix=OUTPUT_PREFIX):
         for method in methods_in_rows(rows):
             marker, linestyle = METHOD_STYLES[method]
             method_rows = rows_for_method(rows, method)
-            x, y, std = metric_values(method_rows, metric, scale=100.0)
+            x, y, std = metric_values(method_rows, metric, models, scale=100.0)
             plot_with_band(ax, x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
         ax.set_title(title)
-        set_ratio_axis(ax, rows)
+        set_model_axis(ax, rows)
         ax.set_ylim(0, 105)
         legend = ax.legend(loc="best", fancybox=True, fontsize=10)
         style_legend(legend, alpha=0.72)
@@ -293,6 +314,7 @@ def plot_label_inference(rows, output_prefix=OUTPUT_PREFIX):
 
 
 def plot_precision_recall(rows, output_prefix=OUTPUT_PREFIX):
+    models = models_in_rows(rows)
     metrics = [
         ("delta_z", "CrossLeak"),
         ("confidence_drop", "Confidence drop"),
@@ -304,12 +326,12 @@ def plot_precision_recall(rows, output_prefix=OUTPUT_PREFIX):
         for method in methods_in_rows(rows):
             marker, linestyle = METHOD_STYLES[method]
             method_rows = rows_for_method(rows, method)
-            x, precision, precision_std = metric_values(method_rows, f"{prefix}_precision", scale=100.0)
-            _, recall, recall_std = metric_values(method_rows, f"{prefix}_recall", scale=100.0)
+            x, precision, precision_std = metric_values(method_rows, f"{prefix}_precision", models, scale=100.0)
+            _, recall, recall_std = metric_values(method_rows, f"{prefix}_recall", models, scale=100.0)
             plot_with_band(ax, x, precision, precision_std, f"{METHOD_LABELS[method]} Precision", PALETTE[method], marker, linestyle)
             plot_with_band(ax, x, recall, recall_std, f"{METHOD_LABELS[method]} Recall", PALETTE[method], marker, ":")
         ax.set_title(title)
-        set_ratio_axis(ax, rows)
+        set_model_axis(ax, rows)
         ax.set_ylim(0, 105)
         polish_axes(ax)
     axes[0].set_ylabel("Precision / Recall (%)")
@@ -320,6 +342,7 @@ def plot_precision_recall(rows, output_prefix=OUTPUT_PREFIX):
 
 
 def plot_feature_overlap(rows, output_prefix=OUTPUT_PREFIX):
+    models = models_in_rows(rows)
     methods = methods_in_rows(rows)
     fig, axes = plt.subplots(1, len(methods), figsize=(5.0 * len(methods), 4.8), sharey=True)
     if len(methods) == 1:
@@ -331,10 +354,10 @@ def plot_feature_overlap(rows, output_prefix=OUTPUT_PREFIX):
             ("feature_overlap@5", "s", "--"),
             ("feature_overlap@10", "^", "-."),
         ]:
-            x, y, std = metric_values(method_rows, metric, scale=100.0)
+            x, y, std = metric_values(method_rows, metric, models, scale=100.0)
             plot_with_band(ax, x, y, std, metric.replace("feature_", ""), PALETTE[metric], marker, linestyle)
         ax.set_title(METHOD_LABELS[method])
-        set_ratio_axis(ax, rows)
+        set_model_axis(ax, rows)
         ax.set_ylim(0, 105)
         polish_axes(ax)
     axes[0].set_ylabel("Sensitive Feature Overlap (%)")
@@ -350,8 +373,11 @@ def plot_feature_overlap_bar(rows, output_prefix=OUTPUT_PREFIX):
         ("feature_overlap@5", "overlap@5"),
         ("feature_overlap@10", "overlap@10"),
     ]
-    methods = methods_in_rows(rows)
-    x_positions = list(range(len(methods)))
+    configurations = sorted(
+        rows,
+        key=lambda row: (model_sort_key(row["model"]), METHOD_ORDER.index(row["method"])),
+    )
+    x_positions = list(range(len(configurations)))
     bar_width = 0.22
 
     fig, ax = plt.subplots(figsize=(8.8, 5.4))
@@ -360,28 +386,27 @@ def plot_feature_overlap_bar(rows, output_prefix=OUTPUT_PREFIX):
             position + (metric_index - (len(metrics) - 1) / 2) * bar_width
             for position in x_positions
         ]
-        values = []
-        for method in methods:
-            method_rows = [row for row in rows_for_method(rows, method) if metric in row]
-            values.append(
-                sum(row[metric] for row in method_rows) / len(method_rows) * 100.0
-                if method_rows else 0.0
-            )
+        values = [row.get(metric, 0.0) * 100.0 for row in configurations]
+        errors = [row.get(f"{metric}_std", 0.0) * 100.0 for row in configurations]
         ax.bar(
             offsets,
             values,
+            yerr=errors,
             width=bar_width,
             label=label,
             color=PALETTE[metric],
             edgecolor="#222222",
             linewidth=0.8,
             alpha=0.92,
+            capsize=3,
         )
 
-    ax.set_xlabel("Unlearning Method")
-    ax.set_ylabel("Average Sensitive Feature Overlap (%)")
+    ax.set_xlabel("Model Architecture / Unlearning Method")
+    ax.set_ylabel("Sensitive Feature Overlap (%)")
     ax.set_xticks(x_positions)
-    ax.set_xticklabels([METHOD_LABELS[method] for method in methods])
+    ax.set_xticklabels([
+        f"{row['model']}\n{METHOD_LABELS[row['method']]}" for row in configurations
+    ])
     ax.set_ylim(0, 105)
     style_legend(ax.legend(loc="best", fancybox=True))
     polish_axes(ax)
@@ -389,35 +414,36 @@ def plot_feature_overlap_bar(rows, output_prefix=OUTPUT_PREFIX):
 
 
 def plot_feature_and_clip(rows, output_prefix=OUTPUT_PREFIX):
+    models = models_in_rows(rows)
     fig, axes = plt.subplots(1, 3, figsize=(16.2, 4.8), sharey=True)
 
     for method in methods_in_rows(rows):
         marker, linestyle = METHOD_STYLES[method]
         method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "before_exclusive_strength_ratio", scale=100.0)
+        x, y, std = metric_values(method_rows, "before_exclusive_strength_ratio", models, scale=100.0)
         plot_with_band(axes[0], x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
-        x, y, std = metric_values(method_rows, "target_label_feature_coverage", scale=100.0)
+        x, y, std = metric_values(method_rows, "target_label_feature_coverage", models, scale=100.0)
         plot_with_band(axes[1], x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
 
     axes[0].set_title("Before-exclusive Strength")
-    set_ratio_axis(axes[0], rows)
+    set_model_axis(axes[0], rows)
     axes[0].set_ylabel("Metric Value (%)")
     axes[0].set_ylim(0, 105)
     polish_axes(axes[0])
 
     axes[1].set_title("Target Feature Coverage")
-    set_ratio_axis(axes[1], rows)
+    set_model_axis(axes[1], rows)
     axes[1].set_ylim(0, 105)
     polish_axes(axes[1])
 
     for method in methods_in_rows(rows):
         marker, linestyle = METHOD_STYLES[method]
         method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "clip_concept_coverage", scale=100.0)
+        x, y, std = metric_values(method_rows, "clip_concept_coverage", models, scale=100.0)
         plot_with_band(axes[2], x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle, linewidth=2.6)
 
     axes[2].set_title("CLIP Concept Coverage")
-    set_ratio_axis(axes[2], rows)
+    set_model_axis(axes[2], rows)
     axes[2].set_ylim(0, 105)
     polish_axes(axes[2])
 
@@ -429,7 +455,7 @@ def plot_feature_and_clip(rows, output_prefix=OUTPUT_PREFIX):
 
 
 def print_summary(rows):
-    print("CIFAR-10 unlearning-ratio attack analysis parsed from results_unl_ratio.txt")
+    print("CIFAR-10 different-model attack analysis parsed from results_different_models.txt")
     for method in methods_in_rows(rows):
         method_rows = rows_for_method(rows, method)
         avg_acc_after = sum(row["acc_after"] for row in method_rows) / len(method_rows)
@@ -437,7 +463,7 @@ def print_summary(rows):
         avg_clip = sum(row["clip_concept_coverage"] for row in method_rows) / len(method_rows)
         print(
             f"{METHOD_LABELS[method]}: "
-            f"ratios={[row['ratio'] for row in method_rows]}, "
+            f"models={[row['model'] for row in method_rows]}, "
             f"avg acc_after={avg_acc_after:.4f}, "
             f"avg feature_overlap@5={avg_feature5:.4f}, "
             f"avg clip_concept_coverage={avg_clip:.4f}"

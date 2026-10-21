@@ -1485,9 +1485,10 @@ def configure_args():
     args.batch_size = 200
     args.num_clients = 10
     args.num_unlearn_clients = int(os.environ.get("CIFAR10_RFU_Unlearning_Clients", 1))
-    args.unlearning_ratio = float(os.environ.get("CIFAR10_RFU_Unlearning_Ratio", 0.01))
+    args.unlearning_ratios = [0.01, 0.02, 0.03, 0.04, 0.05]
+    args.unlearning_ratio = args.unlearning_ratios[0]
     args.unlearn_target_classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    args.unlearning_class_range = int(os.environ.get("CIFAR10_RFU_Unlearning_Class_Range", 1))
+    args.unlearning_class_range = 5
     args.original_global_rounds = int(os.environ.get("CIFAR10_VGG_Global_Rounds", 40))
     args.unlearning_global_rounds = 1
     args.local_epochs = 5
@@ -1608,9 +1609,9 @@ def collect_rfu_summary_metrics(acc_before, acc_after, mia_before, mia_after, cr
     }
 
 
-def print_single_seed_rfu_summary(seed, metrics, mia_before, mia_after):
+def print_single_seed_rfu_summary(seed, ratio, metrics, mia_before, mia_after):
     print(
-        f"RFU summary seed={seed}: "
+        f"RFU summary ratio={ratio:.2f}, seed={seed}: "
         f"acc_before={metrics['acc_before']:.4f}, acc_after={metrics['acc_after']:.4f}, "
         f"mia_acc_before={metrics['mia_acc_before']:.4f}, mia_auc_before={mia_before['mia_auc']:.4f}, "
         f"mia_acc_after={metrics['mia_acc_after']:.4f}, mia_auc_after={mia_after['mia_auc']:.4f}, "
@@ -1643,50 +1644,92 @@ def print_single_seed_rfu_summary(seed, metrics, mia_before, mia_after):
     )
 
 
-def print_multi_seed_rfu_summary(seed_metrics):
-    metric_names = [
-        "acc_before",
-        "acc_after",
-        "mia_acc_before",
-        "mia_acc_after",
-        "feature_vote_precision",
-        "feature_vote_recall",
-        "feature_vote_overlap",
-        "delta_z_precision",
-        "delta_z_recall",
-        "delta_z_overlap",
-        "confidence_drop_precision",
-        "confidence_drop_recall",
-        "confidence_drop_overlap",
-        "hybrid_precision",
-        "hybrid_recall",
-        "hybrid_overlap",
-        "ulia_known_k_precision",
-        "ulia_known_k_recall",
-        "ulia_known_k_overlap",
-        "ulia_dynamic_precision",
-        "ulia_dynamic_recall",
-        "ulia_dynamic_overlap",
-        "before_exclusive_strength_ratio",
-        "target_label_feature_coverage",
-        "clip_concept_coverage",
-        "clip_concept_precision",
-        "clip_weighted_coverage",
-        "feature_overlap@1",
-        "feature_overlap@5",
-        "feature_overlap@10",
-    ]
-    print("\nRFU summary across seeds:")
-    for name in metric_names:
-        values = np.array([metrics[name] for metrics in seed_metrics], dtype=np.float64)
+RFU_SUMMARY_METRICS = [
+    "acc_before",
+    "acc_after",
+    "mia_acc_before",
+    "mia_acc_after",
+    "feature_vote_precision",
+    "feature_vote_recall",
+    "feature_vote_overlap",
+    "delta_z_precision",
+    "delta_z_recall",
+    "delta_z_overlap",
+    "confidence_drop_precision",
+    "confidence_drop_recall",
+    "confidence_drop_overlap",
+    "hybrid_precision",
+    "hybrid_recall",
+    "hybrid_overlap",
+    "ulia_known_k_precision",
+    "ulia_known_k_recall",
+    "ulia_known_k_overlap",
+    "ulia_dynamic_precision",
+    "ulia_dynamic_recall",
+    "ulia_dynamic_overlap",
+    "before_exclusive_strength_ratio",
+    "target_label_feature_coverage",
+    "clip_concept_coverage",
+    "clip_concept_precision",
+    "clip_weighted_coverage",
+    "feature_overlap@1",
+    "feature_overlap@5",
+    "feature_overlap@10",
+]
+
+
+def summarize_rfu_metrics(metrics_list):
+    summary = {}
+    for name in RFU_SUMMARY_METRICS:
+        values = np.array([metrics[name] for metrics in metrics_list], dtype=np.float64)
+        summary[name] = {
+            "mean": float(values.mean()),
+            "variance": float(values.var()),
+        }
+    return summary
+
+
+def print_multi_seed_rfu_summary(ratio, seed_metrics, class_range):
+    summary = summarize_rfu_metrics(seed_metrics)
+    print("\nRFU VGG summary across seeds:")
+    print(f"Class Range: {class_range}")
+    print(f"Ratio: {ratio:.2f}")
+    for name in RFU_SUMMARY_METRICS:
+        stats = summary[name]
+        print(f"  {name}: mean={stats['mean']:.4f}, variance={stats['variance']:.6f}")
+    return summary
+
+
+def print_across_ratio_rfu_summary(ratio_summaries, class_range):
+    print("\n========== RFU VGG final ratio summary ==========")
+    print(f"Class Range: {class_range}")
+    print("Ratios: " + ", ".join(f"{ratio:.2f}" for ratio, _ in ratio_summaries))
+
+    print("\nPer-ratio statistics across seeds:")
+    for ratio, summary in ratio_summaries:
+        print(f"\nRatio: {ratio:.2f}")
+        for name in RFU_SUMMARY_METRICS:
+            stats = summary[name]
+            print(
+                f"  {name}: mean={stats['mean']:.4f}, "
+                f"variance={stats['variance']:.6f}"
+            )
+
+    print("\nOverall statistics across the five ratio means:")
+    for name in RFU_SUMMARY_METRICS:
+        values = np.array(
+            [summary[name]["mean"] for _, summary in ratio_summaries],
+            dtype=np.float64,
+        )
         print(f"  {name}: mean={values.mean():.4f}, variance={values.var():.6f}")
 
 
-def run_rfu_for_seed(seed, before_global_state):
+def run_rfu_for_seed(seed, unlearning_ratio, before_global_state):
     args = configure_args()
     args.seed = seed
+    args.unlearning_ratio = float(unlearning_ratio)
     set_random_seed(args.seed)
-    print(f"\n========== RFU seed {seed} ==========")
+    print(f"\n========== RFU ratio {args.unlearning_ratio:.2f}, seed {seed} ==========")
     print("\n".join(f"{k}={v}" for k, v in vars(args).items()))
     print("unlearning target classes:", resolve_unlearning_target_classes(args))
 
@@ -1718,7 +1761,7 @@ def run_rfu_for_seed(seed, before_global_state):
             train_set_for_eval=train_set_no_aug,
             client_data_info=client_data_info,
             args=args,
-            name=f"seed {seed} global round {rnd}",
+            name=f"ratio {args.unlearning_ratio:.2f} seed {seed} global round {rnd}",
         )
 
     acc_after = evaluate_classifier(after_global, test_loader, args, name="after unlearning")
@@ -1736,7 +1779,7 @@ def run_rfu_for_seed(seed, before_global_state):
 
 
     metrics = collect_rfu_summary_metrics(acc_before, acc_after, mia_before, mia_after, crossleak)
-    print_single_seed_rfu_summary(seed, metrics, mia_before, mia_after)
+    print_single_seed_rfu_summary(seed, args.unlearning_ratio, metrics, mia_before, mia_after)
     return metrics
 
 
@@ -1753,10 +1796,27 @@ def run_rfu():
     del before_global
 
     seeds = [0, 1, 2, 3, 4]
-    seed_metrics = []
-    for seed in seeds:
-        seed_metrics.append(run_rfu_for_seed(seed, before_global_state))
-    print_multi_seed_rfu_summary(seed_metrics)
+    ratio_summaries = []
+    for ratio in before_args.unlearning_ratios:
+        print(
+            f"\n########## VGG RFU: class_range={before_args.unlearning_class_range}, "
+            f"unlearning_ratio={ratio:.2f} ##########"
+        )
+        seed_metrics = [
+            run_rfu_for_seed(seed, ratio, before_global_state)
+            for seed in seeds
+        ]
+        ratio_summary = print_multi_seed_rfu_summary(
+            ratio,
+            seed_metrics,
+            before_args.unlearning_class_range,
+        )
+        ratio_summaries.append((ratio, ratio_summary))
+
+    print_across_ratio_rfu_summary(
+        ratio_summaries,
+        before_args.unlearning_class_range,
+    )
 
 
 if __name__ == "__main__":

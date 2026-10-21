@@ -4,7 +4,6 @@
 # IDE/editor settings
 .idea/
 .vscode/
-*.gitignore
 /CrossLeak_paper/
 
 

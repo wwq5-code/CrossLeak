@@ -18,7 +18,7 @@ os.environ.setdefault("MPLBACKEND", "Agg")
 import matplotlib.pyplot as plt
 
 
-SECTION_RE = re.compile(r"^\s*(?P<section>.+?summary across seeds):\s*$")
+SECTION_RE = re.compile(r"^\s*(?P<section>.+?)\s+summary across seeds:\s*$", re.IGNORECASE)
 METRIC_RE = re.compile(
     r"^\s*(?P<metric>[A-Za-z0-9_@]+):\s*"
     r"mean=(?P<mean>[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?),\s*"
@@ -32,20 +32,20 @@ METHOD_LABELS = {
     "Retraining": "FL Retraining",
 }
 METHOD_ORDER = ["RFU", "Hessian", "Retraining"]
-METHOD_STYLES = {
-    "RFU": ("o", "-"),
-    "Hessian": ("s", "--"),
-    "Retraining": ("^", "-."),
-}
-
 PALETTE = {
     "RFU": "#797BB7",
     "Hessian": "#E07A5F",
     "Retraining": "#59A14F",
-    "before": "#777777",
+    "before": "#A9ADB4",
+    "after": "#4C78A8",
+    "precision": "#4C78A8",
+    "recall": "#F28E2B",
     "feature_overlap@1": "#797BB7",
     "feature_overlap@5": "#86BBD8",
     "feature_overlap@10": "#E1C855",
+    "before_exclusive_strength_ratio": "#797BB7",
+    "target_label_feature_coverage": "#59A14F",
+    "clip_concept_coverage": "#E07A5F",
 }
 
 EXCLUDED_METRIC_PREFIXES = ("hybrid", "clip_weighted_coverage")
@@ -119,38 +119,39 @@ def configure_plot_style():
         "axes.facecolor": "white",
         "savefig.facecolor": "white",
         "savefig.edgecolor": "white",
-        "axes.labelsize": 22,
-        "axes.titlesize": 18,
-        "xtick.labelsize": 15,
-        "ytick.labelsize": 16,
-        "legend.fontsize": 13,
-        "axes.linewidth": 1.6,
-        "axes.edgecolor": "#222222",
-        "grid.color": "#B8B8B8",
-        "grid.alpha": 0.7,
+        "axes.labelsize": 12,
+        "axes.titlesize": 13,
+        "xtick.labelsize": 10,
+        "ytick.labelsize": 10,
+        "legend.fontsize": 10,
+        "axes.linewidth": 1.0,
+        "axes.edgecolor": "#333333",
+        "grid.color": "#D7D7D7",
+        "grid.alpha": 0.75,
         "grid.linestyle": "--",
-        "grid.linewidth": 0.9,
+        "grid.linewidth": 0.7,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
     })
 
 
 def polish_axes(ax):
-    ax.grid(True, which="major", axis="both")
+    ax.grid(True, which="major", axis="y")
     ax.set_axisbelow(True)
-    for spine in ax.spines.values():
-        spine.set_color("#222222")
-        spine.set_linewidth(1.6)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_color("#444444")
+    ax.spines["bottom"].set_color("#444444")
 
 
-def style_legend(legend, alpha=0.78):
+def style_legend(legend, alpha=0.92):
     if legend is None:
         return
     frame = legend.get_frame()
     frame.set_facecolor("white")
     frame.set_alpha(alpha)
-    frame.set_edgecolor("#666666")
-    frame.set_linewidth(0.8)
+    frame.set_edgecolor("#BBBBBB")
+    frame.set_linewidth(0.7)
 
 
 def methods_in_rows(rows):
@@ -166,53 +167,79 @@ def models_in_rows(rows):
     return sorted({row["model"] for row in rows}, key=model_sort_key)
 
 
-def set_model_axis(ax, rows):
-    models = models_in_rows(rows)
-    ax.set_xlabel("Model Architecture")
-    ax.set_xticks(range(len(models)))
-    ax.set_xticklabels(models)
-    if len(models) > 1:
-        ax.set_xlim(-0.25, len(models) - 0.75)
-
-
-def metric_values(method_rows, metric, models, scale=1.0):
-    model_positions = {model: index for index, model in enumerate(models)}
-    available_rows = [row for row in method_rows if metric in row]
-    available_rows.sort(key=lambda row: model_sort_key(row["model"]))
-    x = [model_positions[row["model"]] for row in available_rows]
-    y = [row[metric] * scale for row in available_rows]
-    std = [row.get(f"{metric}_std", 0.0) * scale for row in available_rows]
-    return x, y, std
-
-
-def baseline_rows(rows):
-    """Choose one before-unlearning baseline per model, preferring RFU."""
-    selected = []
-    for model in models_in_rows(rows):
-        candidates = [row for row in rows if row["model"] == model]
-        candidates.sort(key=lambda row: (row["method"] != "RFU", METHOD_ORDER.index(row["method"])))
-        if candidates:
-            selected.append(candidates[0])
-    return selected
-
-
-def plot_with_band(ax, x, y, std, label, color, marker, linestyle="-", linewidth=3.0):
-    if not x:
-        return
-    lower = [max(0.0, value - err) for value, err in zip(y, std)]
-    upper = [min(100.0, value + err) for value, err in zip(y, std)]
-    ax.plot(
-        x,
-        y,
-        color=color,
-        linestyle=linestyle,
-        marker=marker,
-        linewidth=linewidth,
-        markersize=8,
-        markeredgewidth=1.5,
-        label=label,
+def configuration_rows(rows):
+    return sorted(
+        rows,
+        key=lambda row: (model_sort_key(row["model"]), METHOD_ORDER.index(row["method"])),
     )
-    ax.fill_between(x, lower, upper, color=color, alpha=0.16, linewidth=0)
+
+
+def configuration_labels(rows):
+    return [
+        f"{row['model']}\n{METHOD_LABELS[row['method']]}"
+        for row in configuration_rows(rows)
+    ]
+
+
+def set_configuration_axis(ax, rows, show_labels=True):
+    positions = list(range(len(configuration_rows(rows))))
+    ax.set_xticks(positions)
+    ax.set_xticklabels(configuration_labels(rows) if show_labels else [])
+    ax.set_xlim(-0.55, len(positions) - 0.45)
+
+
+def draw_grouped_bars(ax, rows, series, ylim=(0, 105), show_labels=True):
+    """Draw metric series for each (model, method) configuration."""
+    ordered_rows = configuration_rows(rows)
+    positions = list(range(len(ordered_rows)))
+    width = min(0.72 / max(len(series), 1), 0.30)
+    containers = []
+
+    for index, (metric, label, color) in enumerate(series):
+        offset = (index - (len(series) - 1) / 2.0) * width
+        values = [row.get(metric, 0.0) * 100.0 for row in ordered_rows]
+        errors = [row.get(f"{metric}_std", 0.0) * 100.0 for row in ordered_rows]
+        container = ax.bar(
+            [position + offset for position in positions],
+            values,
+            yerr=errors,
+            width=width * 0.92,
+            label=label,
+            color=color,
+            edgecolor="white",
+            linewidth=0.7,
+            capsize=2.5,
+            error_kw={"elinewidth": 1.0, "capthick": 1.0, "ecolor": "#444444"},
+            zorder=3,
+        )
+        containers.append(container)
+
+    set_configuration_axis(ax, rows, show_labels=show_labels)
+    ax.set_ylim(*ylim)
+    polish_axes(ax)
+    return containers
+
+
+def draw_single_metric_bars(ax, rows, metric, ylim=(0, 105), show_labels=True):
+    ordered_rows = configuration_rows(rows)
+    values = [row.get(metric, 0.0) * 100.0 for row in ordered_rows]
+    errors = [row.get(f"{metric}_std", 0.0) * 100.0 for row in ordered_rows]
+    colors = [PALETTE[row["method"]] for row in ordered_rows]
+    ax.bar(
+        range(len(ordered_rows)),
+        values,
+        yerr=errors,
+        width=0.62,
+        color=colors,
+        edgecolor="white",
+        linewidth=0.7,
+        capsize=2.5,
+        error_kw={"elinewidth": 1.0, "capthick": 1.0, "ecolor": "#444444"},
+        zorder=3,
+    )
+    set_configuration_axis(ax, rows, show_labels=show_labels)
+    ax.set_ylim(*ylim)
+    polish_axes(ax)
 
 
 def save_figure(fig, name, rect=None):
@@ -244,213 +271,137 @@ def save_tables(rows):
 
 
 def plot_utility(rows, output_prefix=OUTPUT_PREFIX):
-    models = models_in_rows(rows)
-    fig, ax = plt.subplots(figsize=(8.0, 5.4))
-    for method in methods_in_rows(rows):
-        marker, linestyle = METHOD_STYLES[method]
-        method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "acc_after", models, scale=100.0)
-        plot_with_band(ax, x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
-
-    before_rows = baseline_rows(rows)
-    if before_rows:
-        x, y, _ = metric_values(before_rows, "acc_before", models, scale=100.0)
-        ax.plot(x, y, color=PALETTE["before"], linestyle=":", linewidth=2.5, label="Before unlearning")
-
-    set_model_axis(ax, rows)
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    draw_grouped_bars(
+        ax,
+        rows,
+        [
+            ("acc_before", "Before unlearning", PALETTE["before"]),
+            ("acc_after", "After unlearning", PALETTE["after"]),
+        ],
+        ylim=(0, 100),
+    )
     ax.set_ylabel("Test Accuracy (%)")
-    ax.set_ylim(0, 95)
-    style_legend(ax.legend(loc="best", fancybox=True))
-    polish_axes(ax)
+    ax.set_title("Model Utility Before and After Unlearning", pad=10)
+    style_legend(ax.legend(loc="upper right", ncol=2))
     save_figure(fig, f"{output_prefix}_utility")
 
 
 def plot_mia(rows, output_prefix=OUTPUT_PREFIX):
-    models = models_in_rows(rows)
-    fig, ax = plt.subplots(figsize=(8.0, 5.4))
-    for method in methods_in_rows(rows):
-        marker, linestyle = METHOD_STYLES[method]
-        method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "mia_acc_after", models, scale=100.0)
-        plot_with_band(ax, x, y, std, f"{METHOD_LABELS[method]} after", PALETTE[method], marker, linestyle)
-
-    before_rows = baseline_rows(rows)
-    if before_rows:
-        x, y, std = metric_values(before_rows, "mia_acc_before", models, scale=100.0)
-        plot_with_band(ax, x, y, std, "Before unlearning", PALETTE["before"], "v", ":")
-
-    ax.axhline(50, color="#555555", linestyle=":", linewidth=2.0)
-    set_model_axis(ax, rows)
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    draw_grouped_bars(
+        ax,
+        rows,
+        [
+            ("mia_acc_before", "Before unlearning", PALETTE["before"]),
+            ("mia_acc_after", "After unlearning", PALETTE["after"]),
+        ],
+        ylim=(48, 62),
+    )
+    ax.axhline(50, color="#666666", linestyle=":", linewidth=1.2, label="Random guess")
     ax.set_ylabel("MIA Accuracy (%)")
-    ax.set_ylim(48, 62)
-    style_legend(ax.legend(loc="best", fancybox=True))
-    polish_axes(ax)
+    ax.set_title("Membership Inference Accuracy", pad=10)
+    style_legend(ax.legend(loc="upper right", ncol=3))
     save_figure(fig, f"{output_prefix}_mia_accuracy")
 
 
 def plot_label_inference(rows, output_prefix=OUTPUT_PREFIX):
-    models = models_in_rows(rows)
     metrics = [
         ("delta_z_overlap", "CrossLeak"),
-        ("confidence_drop_overlap", "Confidence drop"),
-        ("ulia_known_k_overlap", "ULIA known-k"),
-        ("ulia_dynamic_overlap", "ULIA dynamic"),
+        ("confidence_drop_overlap", "Confidence Drop"),
+        ("ulia_known_k_overlap", "ULIA (known k)"),
+        ("ulia_dynamic_overlap", "ULIA (dynamic)"),
     ]
-    fig, axes = plt.subplots(1, len(metrics), figsize=(5.0 * len(metrics), 4.8), sharey=True)
-    for ax, (metric, title) in zip(axes, metrics):
-        for method in methods_in_rows(rows):
-            marker, linestyle = METHOD_STYLES[method]
-            method_rows = rows_for_method(rows, method)
-            x, y, std = metric_values(method_rows, metric, models, scale=100.0)
-            plot_with_band(ax, x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
-        ax.set_title(title)
-        set_model_axis(ax, rows)
-        ax.set_ylim(0, 105)
-        legend = ax.legend(loc="best", fancybox=True, fontsize=10)
-        style_legend(legend, alpha=0.72)
-        polish_axes(ax)
-    axes[0].set_ylabel("Label Infer. Overlap (%)")
+    fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.2), sharex=True, sharey=True)
+    for index, (ax, (metric, title)) in enumerate(zip(axes.flat, metrics)):
+        draw_single_metric_bars(ax, rows, metric, show_labels=index >= 2)
+        ax.set_title(title, pad=8)
+        if index % 2 == 0:
+            ax.set_ylabel("Label Inference Overlap (%)")
     save_figure(fig, f"{output_prefix}_label_inference_overlap")
 
 
 def plot_precision_recall(rows, output_prefix=OUTPUT_PREFIX):
-    models = models_in_rows(rows)
     metrics = [
         ("delta_z", "CrossLeak"),
-        ("confidence_drop", "Confidence drop"),
-        ("ulia_known_k", "ULIA known-k"),
-        ("ulia_dynamic", "ULIA dynamic"),
+        ("confidence_drop", "Confidence Drop"),
+        ("ulia_known_k", "ULIA (known k)"),
+        ("ulia_dynamic", "ULIA (dynamic)"),
     ]
-    fig, axes = plt.subplots(1, len(metrics), figsize=(5.0 * len(metrics), 4.8), sharey=True)
-    for ax, (prefix, title) in zip(axes, metrics):
-        for method in methods_in_rows(rows):
-            marker, linestyle = METHOD_STYLES[method]
-            method_rows = rows_for_method(rows, method)
-            x, precision, precision_std = metric_values(method_rows, f"{prefix}_precision", models, scale=100.0)
-            _, recall, recall_std = metric_values(method_rows, f"{prefix}_recall", models, scale=100.0)
-            plot_with_band(ax, x, precision, precision_std, f"{METHOD_LABELS[method]} Precision", PALETTE[method], marker, linestyle)
-            plot_with_band(ax, x, recall, recall_std, f"{METHOD_LABELS[method]} Recall", PALETTE[method], marker, ":")
-        ax.set_title(title)
-        set_model_axis(ax, rows)
-        ax.set_ylim(0, 105)
-        polish_axes(ax)
-    axes[0].set_ylabel("Precision / Recall (%)")
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig_legend = fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 1.07), ncol=3, fancybox=True)
+    fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.2), sharex=True, sharey=True)
+    for index, (ax, (prefix, title)) in enumerate(zip(axes.flat, metrics)):
+        draw_grouped_bars(
+            ax,
+            rows,
+            [
+                (f"{prefix}_precision", "Precision", PALETTE["precision"]),
+                (f"{prefix}_recall", "Recall", PALETTE["recall"]),
+            ],
+            show_labels=index >= 2,
+        )
+        ax.set_title(title, pad=8)
+        if index % 2 == 0:
+            ax.set_ylabel("Score (%)")
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig_legend = fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 1.01), ncol=2)
     style_legend(fig_legend)
-    save_figure(fig, f"{output_prefix}_precision_recall", rect=(0, 0, 1, 0.90))
+    save_figure(fig, f"{output_prefix}_precision_recall", rect=(0, 0, 1, 0.95))
 
 
 def plot_feature_overlap(rows, output_prefix=OUTPUT_PREFIX):
-    models = models_in_rows(rows)
-    methods = methods_in_rows(rows)
-    fig, axes = plt.subplots(1, len(methods), figsize=(5.0 * len(methods), 4.8), sharey=True)
-    if len(methods) == 1:
-        axes = [axes]
-    for ax, method in zip(axes, methods):
-        method_rows = rows_for_method(rows, method)
-        for metric, marker, linestyle in [
-            ("feature_overlap@1", "o", "-"),
-            ("feature_overlap@5", "s", "--"),
-            ("feature_overlap@10", "^", "-."),
-        ]:
-            x, y, std = metric_values(method_rows, metric, models, scale=100.0)
-            plot_with_band(ax, x, y, std, metric.replace("feature_", ""), PALETTE[metric], marker, linestyle)
-        ax.set_title(METHOD_LABELS[method])
-        set_model_axis(ax, rows)
-        ax.set_ylim(0, 105)
-        polish_axes(ax)
-    axes[0].set_ylabel("Sensitive Feature Overlap (%)")
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig_legend = fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 1.05), ncol=3, fancybox=True)
-    style_legend(fig_legend)
-    save_figure(fig, f"{output_prefix}_feature_overlap", rect=(0, 0, 1, 0.92))
-
-
-def plot_feature_overlap_bar(rows, output_prefix=OUTPUT_PREFIX):
-    metrics = [
-        ("feature_overlap@1", "overlap@1"),
-        ("feature_overlap@5", "overlap@5"),
-        ("feature_overlap@10", "overlap@10"),
-    ]
-    configurations = sorted(
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    draw_grouped_bars(
+        ax,
         rows,
-        key=lambda row: (model_sort_key(row["model"]), METHOD_ORDER.index(row["method"])),
+        [
+            ("feature_overlap@1", "Overlap@1", PALETTE["feature_overlap@1"]),
+            ("feature_overlap@5", "Overlap@5", PALETTE["feature_overlap@5"]),
+            ("feature_overlap@10", "Overlap@10", PALETTE["feature_overlap@10"]),
+        ],
     )
-    x_positions = list(range(len(configurations)))
-    bar_width = 0.22
-
-    fig, ax = plt.subplots(figsize=(8.8, 5.4))
-    for metric_index, (metric, label) in enumerate(metrics):
-        offsets = [
-            position + (metric_index - (len(metrics) - 1) / 2) * bar_width
-            for position in x_positions
-        ]
-        values = [row.get(metric, 0.0) * 100.0 for row in configurations]
-        errors = [row.get(f"{metric}_std", 0.0) * 100.0 for row in configurations]
-        ax.bar(
-            offsets,
-            values,
-            yerr=errors,
-            width=bar_width,
-            label=label,
-            color=PALETTE[metric],
-            edgecolor="#222222",
-            linewidth=0.8,
-            alpha=0.92,
-            capsize=3,
-        )
-
-    ax.set_xlabel("Model Architecture / Unlearning Method")
     ax.set_ylabel("Sensitive Feature Overlap (%)")
-    ax.set_xticks(x_positions)
-    ax.set_xticklabels([
-        f"{row['model']}\n{METHOD_LABELS[row['method']]}" for row in configurations
-    ])
-    ax.set_ylim(0, 105)
-    style_legend(ax.legend(loc="best", fancybox=True))
-    polish_axes(ax)
-    save_figure(fig, f"{output_prefix}_feature_overlap_bar")
+    ax.set_title("Top-k Sensitive Feature Recovery", pad=10)
+    style_legend(ax.legend(loc="upper left", ncol=3))
+    save_figure(fig, f"{output_prefix}_feature_overlap")
+
+
+def plot_rfu_model_comparison(rows, output_prefix=OUTPUT_PREFIX):
+    rfu_rows = [row for row in rows if row["method"] == "RFU"]
+    if not rfu_rows:
+        return
+
+    fig, ax = plt.subplots(figsize=(7.2, 4.8))
+    draw_grouped_bars(
+        ax,
+        rfu_rows,
+        [
+            ("feature_overlap@1", "Overlap@1", PALETTE["feature_overlap@1"]),
+            ("feature_overlap@5", "Overlap@5", PALETTE["feature_overlap@5"]),
+            ("feature_overlap@10", "Overlap@10", PALETTE["feature_overlap@10"]),
+        ],
+    )
+    ax.set_xticklabels([row["model"] for row in configuration_rows(rfu_rows)])
+    ax.set_xlabel("Model Architecture")
+    ax.set_ylabel("Sensitive Feature Overlap (%)")
+    ax.set_title("FedU Cross-Architecture Comparison", pad=10)
+    style_legend(ax.legend(loc="upper center", ncol=3))
+    save_figure(fig, f"{output_prefix}_rfu_model_comparison")
 
 
 def plot_feature_and_clip(rows, output_prefix=OUTPUT_PREFIX):
-    models = models_in_rows(rows)
-    fig, axes = plt.subplots(1, 3, figsize=(16.2, 4.8), sharey=True)
-
-    for method in methods_in_rows(rows):
-        marker, linestyle = METHOD_STYLES[method]
-        method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "before_exclusive_strength_ratio", models, scale=100.0)
-        plot_with_band(axes[0], x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
-        x, y, std = metric_values(method_rows, "target_label_feature_coverage", models, scale=100.0)
-        plot_with_band(axes[1], x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle)
-
-    axes[0].set_title("Before-exclusive Strength")
-    set_model_axis(axes[0], rows)
-    axes[0].set_ylabel("Metric Value (%)")
-    axes[0].set_ylim(0, 105)
-    polish_axes(axes[0])
-
-    axes[1].set_title("Target Feature Coverage")
-    set_model_axis(axes[1], rows)
-    axes[1].set_ylim(0, 105)
-    polish_axes(axes[1])
-
-    for method in methods_in_rows(rows):
-        marker, linestyle = METHOD_STYLES[method]
-        method_rows = rows_for_method(rows, method)
-        x, y, std = metric_values(method_rows, "clip_concept_coverage", models, scale=100.0)
-        plot_with_band(axes[2], x, y, std, METHOD_LABELS[method], PALETTE[method], marker, linestyle, linewidth=2.6)
-
-    axes[2].set_title("CLIP Concept Coverage")
-    set_model_axis(axes[2], rows)
-    axes[2].set_ylim(0, 105)
-    polish_axes(axes[2])
-
-    for ax in axes:
-        legend = ax.legend(loc="best", fancybox=True, fontsize=10)
-        style_legend(legend, alpha=0.72)
-
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    draw_grouped_bars(
+        ax,
+        rows,
+        [
+            ("before_exclusive_strength_ratio", "Exclusive strength", PALETTE["before_exclusive_strength_ratio"]),
+            ("target_label_feature_coverage", "Target feature coverage", PALETTE["target_label_feature_coverage"]),
+            ("clip_concept_coverage", "CLIP concept coverage", PALETTE["clip_concept_coverage"]),
+        ],
+    )
+    ax.set_ylabel("Metric Value (%)")
+    ax.set_title("Sensitive Feature and Semantic Coverage", pad=10)
+    style_legend(ax.legend(loc="upper center", ncol=3))
     save_figure(fig, f"{output_prefix}_feature_and_clip")
 
 
@@ -481,7 +432,7 @@ def main():
     plot_label_inference(rows)
     plot_precision_recall(rows)
     plot_feature_overlap(rows)
-    plot_feature_overlap_bar(rows)
+    plot_rfu_model_comparison(rows)
     plot_feature_and_clip(rows)
     print_summary(rows)
 

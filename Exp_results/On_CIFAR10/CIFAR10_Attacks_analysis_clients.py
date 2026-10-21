@@ -34,9 +34,9 @@ PALETTE = {
     "ulia_known_k_overlap": "#59A14F",
     "ulia_dynamic_overlap": "#E1C855",
     "before_exclusive_strength_ratio": "#797BB7",
-    "target_label_feature_coverage": "#86BBD8",
-    "clip_concept_coverage": "#E07A5F",
-    "clip_weighted_coverage": "#59A14F",
+    "feature_overlap@1": "#86BBD8",
+    "feature_overlap@5": "#E07A5F",
+    "feature_overlap@10": "#59A14F",
 }
 
 LINE_STYLES = {
@@ -46,9 +46,9 @@ LINE_STYLES = {
     "ulia_known_k_overlap": ("D", ":"),
     "ulia_dynamic_overlap": ("v", "-"),
     "before_exclusive_strength_ratio": ("o", "-"),
-    "target_label_feature_coverage": ("s", "--"),
-    "clip_concept_coverage": ("^", "-."),
-    "clip_weighted_coverage": ("D", ":"),
+    "feature_overlap@1": ("s", "--"),
+    "feature_overlap@5": ("^", "-."),
+    "feature_overlap@10": ("D", ":"),
 }
 
 EXCLUDED_METRIC_PREFIXES = ("hybrid",)
@@ -237,9 +237,9 @@ def plot_label_inference_overlap(rows, output_prefix=OUTPUT_PREFIX):
 def plot_feature_inference_performance(rows, output_prefix=OUTPUT_PREFIX):
     metrics = [
         ("before_exclusive_strength_ratio", "Before-exclusive Strength"),
-        ("target_label_feature_coverage", "Target Feature Coverage"),
-        ("clip_concept_coverage", "CLIP Concept Coverage"),
-        ("clip_weighted_coverage", "CLIP Weighted Coverage"),
+        ("feature_overlap@1", "Feature Overlap@1"),
+        ("feature_overlap@5", "Feature Overlap@5"),
+        ("feature_overlap@10", "Feature Overlap@10"),
     ]
     fig, ax = plt.subplots(figsize=(8.4, 5.4))
     for metric, label in metrics:
@@ -263,8 +263,10 @@ def print_summary(rows):
         "confidence_drop_overlap",
         "delta_z_overlap",
         "feature_vote_overlap",
-        "target_label_feature_coverage",
-        "clip_concept_coverage",
+        "before_exclusive_strength_ratio",
+        "feature_overlap@1",
+        "feature_overlap@5",
+        "feature_overlap@10",
     ]:
         values = [row[metric] for row in rows if metric in row]
         if values:

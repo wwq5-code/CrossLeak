@@ -105,7 +105,7 @@ Ratio: 0.03
 
 
 Hessian unlearning summary across seeds:
-Ratio: 0.05
+Ratio: 0.04
   acc_before: mean=0.8673, variance=0.000000
   acc_after: mean=0.8702, variance=0.000002
   mia_acc_before: mean=0.5806, variance=0.000031
